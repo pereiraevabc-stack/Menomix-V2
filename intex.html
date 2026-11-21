@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MenoMix Mediterránea | Nutrición y Bienestar en la Menopausia</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#3D6B52" />
+  <meta name="description" content="Aplicación de nutrición mediterránea y vegetariana con 50 recetas adaptadas a robot de cocina y método tradicional para el bienestar en la menopausia." />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MenoMix" />
+
+  <!-- Iconos SVG inline generados dinámicamente para PWA -->
+  <link id="apple-touch-icon" rel="apple-touch-icon" href="" />
+  <link id="pwa-manifest" rel="manifest" href="" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sage: {
+              50: '#F4F7F5',
+              100: '#E3ECE7',
+              200: '#C6D9CF',
+              300: '#9EBDAE',
+              400: '#729D87',
+              500: '#518068',
+              600: '#3D6B52',
+              700: '#315542',
+              800: '#284536',
+              900: '#21392D',
+            },
+            terracotta: {
+              50: '#FDF6F3',
+              100: '#FAEAE3',
+              200: '#F4D2C4',
+              400: '#E08E6D',
+              500: '#C86D4B',
+              600: '#B05737',
+            },
+            sand: {
+              50: '#FAF8F5',
+              100: '#F3EFEA',
+              200: '#E5DDD3',
+              800: '#4A4238',
+              900: '#2E2922',
+            }
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            serif: ['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #2E2922;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade { animation: fadeIn 0.22s ease-out forwards; }
+  </style>
+</head>
+<body class="pb-24 select-none sm:select-auto">
+
+  <!-- CABECERA SUPERIOR -->
+  <header class="sticky top-0 z-30 bg-sand-50/95 backdrop-blur-md border-b border-sand-200 px-4 py-3">
+    <div class="max-w-2xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-2xl bg-sage-600 flex items-center justify-center text-white shadow-sm shrink-0">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-serif font-bold text-lg leading-tight text-sage-900">MenoMix Mediterránea</h1>
+          <p class="text-[11px] text-sage-600 font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
+            50 recetas · 4 tomas diarias con fruta
+          </p>
+        </div>
+      </div>
+
+      <!-- Resumen rápido de objetivos diarios -->
+      <div class="flex items-center gap-1.5">
+        <button onclick="openNutritionistModal()" title="Ficha técnica y bibliografía"
+          class="p-2 rounded-xl bg-sand-100 hover:bg-sand-200 text-sand-800 border border-sand-200 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </button>
+        <div class="bg-white border border-sage-200 rounded-xl px-2.5 py-1.5 text-right shadow-xs">
+          <div class="text-[9px] uppercase tracking-wider font-bold text-sage-600">Objetivo Diario</div>
+          <div class="flex items-baseline justify-end gap-1.5">
+            <span id="header-kcal" class="text-sm font-extrabold text-sand-900">1620 kcal</span>
+            <span id="header-prot" class="text-xs font-bold text-terracotta-600">88g P</span>
+            <span id="header-calc-badge" class="hidden text-[10px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-md">1200mg Ca</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="max-w-2xl mx-auto px-4 pt-4">
+
+    <!-- PESTAÑA 1: RECETARIO DUAL (ROBOT / TRADICIONAL) -->
+    <section id="tab-recetas" class="animate-fade space-y-4">
+      <!-- Selector Global de Modo de Cocinado -->
+      <div class="bg-white p-2 rounded-2xl border border-sand-200 shadow-xs flex items-center justify-between gap-2">
+        <span class="text-xs font-semibold text-sand-800 pl-2">Método de cocina:</span>
+        <div class="grid grid-cols-2 bg-sand-100 p-1 rounded-xl gap-1">
+          <button id="btn-mode-robot" onclick="setCookingMode('robot')"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-sage-600 text-white shadow-xs">
+            🤖 Robot de cocina
+          </button>
+          <button id="btn-mode-trad" onclick="setCookingMode('tradicional')"
+            class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-sand-800 hover:bg-white/60">
+            🍳 Tradicional
+          </button>
+        </div>
+      </div>
+
+      <!-- Filtros por Categoría, Salud y Tomas -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        <button onclick="setFilter('todas')" data-filter="todas" class="filter-chip active px-3.5 py-1.5 rounded-full text-xs font-bold bg-sage-600 text-white shrink-0">Todas (50)</button>
+        <button onclick="setFilter('osteoporosis')" data-filter="osteoporosis" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-sand-200 text-sand-800 shrink-0">🦴 Alta en Calcio (Ósea)</button>
+        <button onclick="setFilter('vegetariana')" data-filter="vegetariana" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-sand-200 text-sand-800 shrink-0">🌱 Vegetariana</button>
+        <button onclick="setFilter('Desayuno')" data-filter="Desayuno" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-sand-200 text-sand-800 shrink-0">Desayunos (10)</button>
+        <button onclick="setFilter('Media Mañana / Merienda')" data-filter="Media Mañana / Merienda" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-sand-200 text-sand-800 shrink-0">🍎 Fruta / Merienda (8)</button>
+        <button onclick="setFilter('Comida')" data-filter="Comida" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-sand-200 text-sand-800 shrink-0">Comidas (16)</button>
+        <button onclick="setFilter('Cena')" data-filter="Cena" class="filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold bg-white border border-sand-200 text-sand-800 shrink-0">Cenas (16)</button>
+      </div>
+
+      <!-- Banner informativo si el modo Osteoporosis está activo -->
+      <div id="osteo-banner" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-start gap-2.5">
+        <span class="text-lg">🦴</span>
+        <div class="text-xs text-amber-900">
+          <p class="font-bold">Enfoque Salud Ósea y Osteoporosis activo</p>
+          <p class="opacity-90 mt-0.5">Priorizando recetas ricas en calcio biodisponible, vitamina D, vitamina K y magnesio (objetivo ≥ 1.200 mg Ca/día) según consenso AEEM y Fundación Dieta Mediterránea.</p>
+        </div>
+      </div>
+
+      <!-- Listado de Tarjetas de Recetas -->
+      <div id="recipes-grid" class="grid grid-cols-1 gap-4"></div>
+    </section>
+
+    <!-- PESTAÑA 2: PLAN SEMANAL CON DOBLE MENÚ (MEDITERRÁNEO LEGUMBRES/VERDURAS VS VEGETARIANO) -->
+    <section id="tab-plan" class="hidden animate-fade space-y-4">
+      <div class="bg-white rounded-2xl p-4 border border-sand-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="font-serif font-bold text-lg text-sage-900">Planificación Mensual Rigurosa</h2>
+            <p class="text-xs text-sand-800">Base de legumbres, verduras y fruta diaria en media mañana o merienda.</p>
+          </div>
+          <button onclick="rotateNextWeek()" class="px-3 py-2 rounded-xl bg-sage-600 hover:bg-sage-700 text-white text-xs font-bold transition shrink-0">
+            ↻ Siguiente semana
+          </button>
+        </div>
+
+        <!-- Selector Directo de Tipo de Menú (Mediterráneo vs Vegetariano) -->
+        <div class="grid grid-cols-2 gap-1.5 bg-sage-50 p-1.5 rounded-xl border border-sage-200">
+          <button onclick="setDietPattern('mediterranea')" id="btn-diet-med"
+            class="py-2 px-2.5 rounded-lg text-xs font-bold transition bg-sage-600 text-white shadow-2xs">
+            🫒 Menú Mediterráneo (Base Legumbres/Verduras)
+          </button>
+          <button onclick="setDietPattern('vegetariana')" id="btn-diet-veg"
+            class="py-2 px-2.5 rounded-lg text-xs font-bold transition text-sage-900 hover:bg-white/70">
+            🌱 Menú Vegetariano (100% Sin Carne/Pescado)
+          </button>
+        </div>
+
+        <!-- Resumen de Distribución Semanal Rigurosa -->
+        <div id="diet-rigor-badge" class="bg-sand-50 border border-sand-200 rounded-xl p-2.5 text-[11px] text-sand-800 leading-relaxed"></div>
+
+        <!-- Selector de Semana del Mes (Semanas 1 a 4) -->
+        <div class="grid grid-cols-4 gap-1.5 bg-sand-100 p-1 rounded-xl">
+          <button onclick="selectWeekNumber(1)" data-week="1" class="week-tab-btn py-1.5 rounded-lg text-xs font-bold bg-white text-sage-800 shadow-2xs">Sem. 1</button>
+          <button onclick="selectWeekNumber(2)" data-week="2" class="week-tab-btn py-1.5 rounded-lg text-xs font-bold text-sand-800">Sem. 2</button>
+          <button onclick="selectWeekNumber(3)" data-week="3" class="week-tab-btn py-1.5 rounded-lg text-xs font-bold text-sand-800">Sem. 3</button>
+          <button onclick="selectWeekNumber(4)" data-week="4" class="week-tab-btn py-1.5 rounded-lg text-xs font-bold text-sand-800">Sem. 4</button>
+        </div>
+      </div>
+
+      <div id="weekly-plan-container" class="space-y-3"></div>
+    </section>
+
+    <!-- PESTAÑA 3: LISTA DE LA COMPRA -->
+    <section id="tab-compra" class="hidden animate-fade space-y-4">
+      <div class="bg-white rounded-2xl p-4 border border-sand-200 shadow-xs flex items-center justify-between">
+        <div>
+          <h2 class="font-serif font-bold text-lg text-sage-900">Lista de la Compra</h2>
+          <p id="shopping-subtitle" class="text-xs text-sand-800">Calculada según la Semana 1 y tus gramos exactos.</p>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="shareShoppingListWhatsApp()" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-xs">
+            WhatsApp
+          </button>
+          <button onclick="clearCheckedShopping()" class="px-3 py-2 rounded-xl bg-sand-100 text-sand-800 text-xs font-bold">
+            Limpiar
+          </button>
+        </div>
+      </div>
+
+      <div id="shopping-list-container" class="bg-white rounded-2xl border border-sand-200 divide-y divide-sand-100 overflow-hidden"></div>
+    </section>
+
+    <!-- PESTAÑA 4: PERFIL NUTRICIONAL -->
+    <section id="tab-perfil" class="hidden animate-fade space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-sand-200 shadow-xs space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="px-2.5 py-1 rounded-full bg-terracotta-100 text-terracotta-600 text-[11px] font-bold">
+            Personalización Local Privada
+          </span>
+          <button onclick="openNutritionistModal()" class="text-xs font-bold text-sage-700 underline">
+            Ver ficha nutricionista
+          </button>
+        </div>
+
+        <div>
+          <h2 class="font-serif font-bold text-xl text-sage-900">Tu Perfil Nutricional</h2>
+          <p class="text-xs text-sand-800 mt-1">Tus datos se guardan solo en este teléfono. Al compartir el enlace con tus amigas, cada una tendrá su propio perfil y gramos adaptados.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Tu nombre (opcional)</label>
+            <input id="prof-name" type="text" placeholder="Ej. Elena" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm focus:outline-none focus:border-sage-500" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Prioridad de Salud</label>
+            <select id="prof-focus" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm font-medium focus:outline-none focus:border-sage-500">
+              <option value="general">Equilibrio Menopausia General</option>
+              <option value="osteoporosis">🦴 Osteoporosis / Refuerzo Óseo (+Calcio/Vit D)</option>
+              <option value="glucemia">Control Glucémico y Resistencia Insulina</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Menú Preferido</label>
+            <select id="prof-diet" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm font-medium focus:outline-none focus:border-sage-500">
+              <option value="mediterranea">🫒 Menú Mediterráneo (Base Legumbres y Verduras)</option>
+              <option value="vegetariana">🌱 Menú Vegetariano (Ovolactovegetariano)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Edad (años)</label>
+            <input id="prof-age" type="number" min="35" max="90" value="52" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm focus:outline-none focus:border-sage-500" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Peso actual (kg)</label>
+            <input id="prof-weight" type="number" min="40" max="150" value="65" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm focus:outline-none focus:border-sage-500" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Altura (cm)</label>
+            <input id="prof-height" type="number" min="140" max="200" value="163" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm focus:outline-none focus:border-sage-500" />
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Actividad Física</label>
+            <select id="prof-activity" onchange="saveProfile()"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-sand-50 border border-sand-200 text-sm focus:outline-none focus:border-sage-500">
+              <option value="1.2">Sedentaria (poco ejercicio)</option>
+              <option value="1.375" selected>Ligera (caminar 2-3 días/sem)</option>
+              <option value="1.55">Moderada (fuerza/cardio 3-5 días)</option>
+              <option value="1.725">Activa (entrenamiento intenso)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold uppercase text-sand-800 mb-1">Objetivo</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" onclick="setGoal('lose')" data-goal="lose" class="goal-btn py-2 px-2 rounded-xl border text-xs font-bold">Recomposición / Bajar</button>
+            <button type="button" onclick="setGoal('maintain')" data-goal="maintain" class="goal-btn py-2 px-2 rounded-xl border text-xs font-bold">Mantener vitalidad</button>
+            <button type="button" onclick="setGoal('muscle')" data-goal="muscle" class="goal-btn py-2 px-2 rounded-xl border text-xs font-bold">Ganar masa muscular</button>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Resultados Calculados -->
+        <div class="bg-sage-50 border border-sage-200 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center">
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sage-700">Energía</div>
+            <div id="res-kcal" class="text-lg font-extrabold text-sage-900">1620 kcal</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sage-700">Proteína</div>
+            <div id="res-prot" class="text-lg font-extrabold text-terracotta-600">88 g</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sage-700">Calcio Objetivo</div>
+            <div id="res-calc" class="text-lg font-extrabold text-amber-700">1000 mg</div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button onclick="openNutritionistModal()" class="flex-1 py-2.5 px-4 rounded-xl bg-sage-600 text-white text-xs font-bold shadow-xs">
+            📋 Ficha para Nutricionista
+          </button>
+          <button onclick="resetAllData()" class="py-2.5 px-4 rounded-xl bg-sand-100 text-sand-800 text-xs font-bold">
+            Restablecer datos
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- BARRA DE NAVEGACIÓN INFERIOR -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-sand-200 px-2 py-1.5">
+    <div class="max-w-2xl mx-auto grid grid-cols-4 gap-1">
+      <button onclick="switchTab('recetas')" data-tab="recetas" class="nav-btn active flex flex-col items-center py-1.5 rounded-xl text-sage-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        <span class="text-[11px] font-bold mt-0.5">Recetas</span>
+      </button>
+      <button onclick="switchTab('plan')" data-tab="plan" class="nav-btn flex flex-col items-center py-1.5 rounded-xl text-sand-800 opacity-70">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span class="text-[11px] font-bold mt-0.5">Menú</span>
+      </button>
+      <button onclick="switchTab('compra')" data-tab="compra" class="nav-btn flex flex-col items-center py-1.5 rounded-xl text-sand-800 opacity-70">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span class="text-[11px] font-bold mt-0.5">Compra</span>
+      </button>
+      <button onclick="switchTab('perfil')" data-tab="perfil" class="nav-btn flex flex-col items-center py-1.5 rounded-xl text-sand-800 opacity-70">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <span class="text-[11px] font-bold mt-0.5">Perfil</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MODAL DETALLE DE RECETA + COMPARTIR TARJETA CON FOTO -->
+  <div id="recipe-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-sand-50 w-full max-w-xl max-h-[92vh] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+      <div class="px-5 py-3.5 bg-white border-b border-sand-200 flex items-center justify-between">
+        <span id="modal-category" class="text-xs font-bold uppercase tracking-wider text-sage-600">Comida</span>
+        <button onclick="closeRecipeModal()" class="w-8 h-8 rounded-full bg-sand-100 flex items-center justify-center text-sand-900 font-bold">✕</button>
+      </div>
+
+      <div id="modal-body" class="p-5 overflow-y-auto space-y-4"></div>
+    </div>
+  </div>
+
+  <!-- MODAL FICHA TÉCNICA PARA NUTRICIONISTA -->
+  <div id="nutritionist-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-xl max-h-[90vh] rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+      <div class="px-5 py-4 bg-sage-700 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-serif font-bold text-lg">Ficha Técnica y Rigor Bibliográfico</h3>
+          <p class="text-xs text-sage-100">Auditoría de ecuaciones, prevalencia vegetal y micronutrientes</p>
+        </div>
+        <button onclick="closeNutritionistModal()" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">✕</button>
+      </div>
+      <div id="nutritionist-body" class="p-5 overflow-y-auto space-y-4 text-xs text-sand-900"></div>
+      <div class="p-4 bg-sand-50 border-t border-sand-200 flex gap-2">
+        <button onclick="copyNutritionistReport()" class="flex-1 py-2.5 rounded-xl bg-sage-600 text-white font-bold text-xs">
+          📋 Copiar informe completo
+        </button>
+        <button onclick="shareNutritionistWhatsApp()" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs">
+          Enviar por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANVAS OCULTO PARA GENERAR TARJETA CON FOTO -->
+  <canvas id="share-canvas" width="1080" height="1350" class="hidden"></canvas>
+
+  <script>
+    // ==========================================
+    // 1. CATÁLOGO DE 50 RECETAS (10 DESAYUNOS + 8 FRUTA/MERIENDA + 16 COMIDAS + 16 CENAS)
+    // ==========================================
+    const RECIPES = [
+      // --- DESAYUNOS (10) ---
+      {
+        id: 'bol-kefir-chia',
+        title: 'Bol Cremoso de Kéfir, Chía, Nueces y Frutos Rojos',
+        category: 'Desayuno',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '5 min',
+        baseKcal: 340,
+        baseProt: 20,
+        calciumMg: 380,
+        osteoporosisRich: true,
+        color: '#518068',
+        emoji: '🥣',
+        benefits: 'Probióticos para microbiota estrogénica + 380 mg de calcio + ácidos grasos esenciales.',
+        ingredients: [
+          { name: 'Kéfir natural o yogur griego natural', amount: 220, unit: 'g' },
+          { name: 'Semillas de chía o lino molido', amount: 15, unit: 'g' },
+          { name: 'Frutos rojos variados', amount: 90, unit: 'g' },
+          { name: 'Nueces peladas', amount: 20, unit: 'g' },
+          { name: 'Canela de Ceilán en polvo', amount: 2, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pulveriza las semillas 10 seg / Velocidad 9 en el vaso seco para mejorar su absorción.',
+          'Añade el kéfir y la canela; mezcla 10 seg / Velocidad 3. Sirve con frutos rojos y nueces.'
+        ],
+        stepsTrad: [
+          'Mezcla en un bol el kéfir natural con las semillas de chía (o lino molido) y la canela.',
+          'Deja reposar 4 minutos y corona con frutos rojos frescos y nueces troceadas.'
+        ]
+      },
+      {
+        id: 'revuelto-sardinas',
+        title: 'Tosta Integral con Paté de Sardinas, Aguacate y Rúcula',
+        category: 'Desayuno',
+        season: 'Todo el año',
+        vegetarian: false,
+        legumeOrVegMain: false,
+        time: '8 min',
+        baseKcal: 370,
+        baseProt: 24,
+        calciumMg: 360,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🥑',
+        benefits: 'La sardina con espina blanda es una de las mayores fuentes naturales de Calcio y Vitamina D.',
+        ingredients: [
+          { name: 'Sardinas en aceite de oliva (con espina)', amount: 90, unit: 'g' },
+          { name: 'Pan integral de masa madre o centeno', amount: 60, unit: 'g' },
+          { name: 'Aguacate maduro', amount: 50, unit: 'g' },
+          { name: 'Rúcula fresca y semillas de sésamo', amount: 20, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pon las sardinas escurridas, el aguacate y unas gotas de limón en el vaso. Tritura 12 seg / Velocidad 5.',
+          'Unta sobre el pan integral tostado y decora con rúcula fresca y sésamo.'
+        ],
+        stepsTrad: [
+          'Tuesta el pan integral, chafa con tenedor las sardinas (con su espina blanda) junto al aguacate y limón, unta y cubre con rúcula y sésamo.'
+        ]
+      },
+      {
+        id: 'pudding-soja-higos',
+        title: 'Pudding de Chía con Soja Enriquecida, Higos Secos y Almendras',
+        category: 'Desayuno',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '5 min',
+        baseKcal: 365,
+        baseProt: 19,
+        calciumMg: 440,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🌰',
+        benefits: 'Bebida de soja enriquecida + higos secos y almendra: aporte máximo de calcio vegetal (440 mg).',
+        ingredients: [
+          { name: 'Bebida de soja sin azúcar enriquecida en calcio', amount: 220, unit: 'g' },
+          { name: 'Semillas de chía', amount: 20, unit: 'g' },
+          { name: 'Almendras laminadas', amount: 20, unit: 'g' },
+          { name: 'Higos secos troceados', amount: 30, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pulveriza la mitad de las almendras 8 seg / Vel. 8. Añade la bebida de soja y chía; mezcla 15 seg / Vel. 3.',
+          'Reposa en frío y sirve con los higos secos y el resto de almendras.'
+        ],
+        stepsTrad: [
+          'Mezcla en un tarro la bebida de soja enriquecida en calcio con las semillas de chía, deja hidratar 20 min y corona con higos secos y almendras.'
+        ]
+      },
+      {
+        id: 'tosta-hummus-alubias',
+        title: 'Tosta Integral con Hummus de Alubias Blancas, Tomate Seco y Sésamo',
+        category: 'Desayuno',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '7 min',
+        baseKcal: 355,
+        baseProt: 18,
+        calciumMg: 290,
+        osteoporosisRich: true,
+        color: '#C86D4B',
+        emoji: '🥖',
+        benefits: 'Legumbre desde primera hora + calcio de alubia blanca y tahini con bajo índice glucémico.',
+        ingredients: [
+          { name: 'Alubias blancas cocidas lavadas', amount: 140, unit: 'g' },
+          { name: 'Pan integral de masa madre', amount: 60, unit: 'g' },
+          { name: 'Tahini (pasta de sésamo)', amount: 15, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' },
+          { name: 'Tomate seco hidratado y sésamo', amount: 15, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Tritura las alubias, el tahini, AOVE, ajo en polvo y limón 20 seg / Vel. 6. Unta sobre pan tostado y decora.'
+        ],
+        stepsTrad: [
+          'Tritura con batidora de mano las alubias blancas con tahini, AOVE y limón; unta sobre el pan integral tostado y termina con tomate seco y sésamo.'
+        ]
+      },
+      {
+        id: 'tortilla-espinacas-oveja',
+        title: 'Tortilla Jugosa de Espinacas, Queso Curado de Oveja y Calabaza',
+        category: 'Desayuno',
+        season: 'Primavera / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '10 min',
+        baseKcal: 385,
+        baseProt: 25,
+        calciumMg: 350,
+        osteoporosisRich: true,
+        color: '#518068',
+        emoji: '🍳',
+        benefits: 'Proteína de alto valor biológico + vitamina K de espinacas + calcio concentrado del queso.',
+        ingredients: [
+          { name: 'Huevos camperos (2 unidades)', amount: 120, unit: 'g' },
+          { name: 'Espinacas frescas', amount: 80, unit: 'g' },
+          { name: 'Queso curado de oveja rallado', amount: 25, unit: 'g' },
+          { name: 'Semillas de calabaza', amount: 10, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 8, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe espinacas con AOVE 3 min / 120°C / Giro inverso / Vel. cuchara. Añade huevos batidos y queso; cuaja 3 min / 90°C / Vel. 2.'
+        ],
+        stepsTrad: [
+          'Saltea las espinacas 2 min en sartén con AOVE, vierte los huevos batidos con queso rallado, cuaja doblando la tortilla y espolvorea pipas de calabaza.'
+        ]
+      },
+      {
+        id: 'porridge-avena-calabaza',
+        title: 'Gachas Templadas de Avena, Calabaza Asada, Canela y Tahini',
+        category: 'Desayuno',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '12 min',
+        baseKcal: 360,
+        baseProt: 17,
+        calciumMg: 340,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🎃',
+        benefits: 'Betaglucanos saciantes que regulan el colesterol y la glucemia matinal + calcio del sésamo.',
+        ingredients: [
+          { name: 'Copos de avena integral suaves', amount: 45, unit: 'g' },
+          { name: 'Bebida vegetal enriquecida en calcio o leche', amount: 220, unit: 'g' },
+          { name: 'Puré de calabaza cocida', amount: 80, unit: 'g' },
+          { name: 'Tahini o crema de almendra', amount: 15, unit: 'g' },
+          { name: 'Canela y nueces', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece la avena, bebida enriquecida, calabaza y canela 8 min / 90°C / Giro inverso / Vel. 2. Sirve con tahini y nueces.'
+        ],
+        stepsTrad: [
+          'Cuece en cazo a fuego suave la avena con la bebida vegetal, calabaza y canela 8 minutos removiendo; sirve con tahini y nueces.'
+        ]
+      },
+      {
+        id: 'tosta-requeson-granada',
+        title: 'Tosta de Centeno con Requesón (Ricotta), Granada y Pistachos',
+        category: 'Desayuno',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '6 min',
+        baseKcal: 350,
+        baseProt: 20,
+        calciumMg: 310,
+        osteoporosisRich: true,
+        color: '#315542',
+        emoji: '🫐',
+        benefits: 'Polifenoles antioxidantes de la granada + proteína sérica del requesón rica en leucina.',
+        ingredients: [
+          { name: 'Requesón natural (ricotta)', amount: 110, unit: 'g' },
+          { name: 'Pan integral de centeno', amount: 60, unit: 'g' },
+          { name: 'Granos de granada fresca', amount: 60, unit: 'g' },
+          { name: 'Pistachos pelados picados', amount: 15, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 5, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pica pistachos 3 seg / Vel. 6. Bate el requesón con AOVE 10 seg / Vel. 3. Unta sobre pan tostado y cubre con granada y pistachos.'
+        ],
+        stepsTrad: [
+          'Tuesta el pan de centeno, extiende el requesón con un hilo de AOVE y cubre con granada y pistachos picados.'
+        ]
+      },
+      {
+        id: 'revuelto-champis-requeson',
+        title: 'Revuelto Mediterráneo de Champiñones, Tomate Cherry y Orégano',
+        category: 'Desayuno',
+        season: 'Primavera / Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '10 min',
+        baseKcal: 345,
+        baseProt: 22,
+        calciumMg: 210,
+        osteoporosisRich: false,
+        color: '#729D87',
+        emoji: '🍄',
+        benefits: 'Vitamina D natural de champiñones expuestos a luz + colina y proteína completa.',
+        ingredients: [
+          { name: 'Huevos camperos (2 unidades)', amount: 120, unit: 'g' },
+          { name: 'Champiñones frescos laminados', amount: 100, unit: 'g' },
+          { name: 'Tomates cherry partidos', amount: 60, unit: 'g' },
+          { name: 'Pan integral tostado', amount: 45, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y orégano', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe champiñones y cherry con AOVE y orégano 5 min / 120°C / Giro inverso / Vel. cuchara. Añade huevos batidos y cuaja 2 min / 90°C / Vel. 1.'
+        ],
+        stepsTrad: [
+          'Saltea champiñones y cherry en sartén con AOVE y orégano 5 min; añade huevos batidos, cuaja jugoso y acompaña con pan integral.'
+        ]
+      },
+      {
+        id: 'tortitas-avena-platano-sesamo',
+        title: 'Tortitas Esponjosas de Avena, Huevo, Yogur y Crema de Almendras',
+        category: 'Desayuno',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '12 min',
+        baseKcal: 375,
+        baseProt: 21,
+        calciumMg: 295,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🥞',
+        benefits: 'Desayuno saciante sin azúcares añadidos con proteína completa y calcio de yogur y almendra.',
+        ingredients: [
+          { name: 'Copos o harina de avena integral', amount: 40, unit: 'g' },
+          { name: 'Huevo campero (1 unidad)', amount: 60, unit: 'g' },
+          { name: 'Yogur natural o kéfir espeso', amount: 100, unit: 'g' },
+          { name: 'Crema de almendras 100%', amount: 15, unit: 'g' },
+          { name: 'Plátano maduro o manzana rallada', amount: 50, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Tritura en el vaso la avena, el huevo, la mitad del yogur y el plátano 20 seg / Vel. 6. Dora las tortitas en sartén antiadherente 2 min por lado y sirve con el resto del yogur y crema de almendra.'
+        ],
+        stepsTrad: [
+          'Bate con batidora de mano la avena, el huevo, medio yogur y el plátano; cocina pequeñas tortitas en sartén 2 min por lado y acompaña con el yogur restante y crema de almendra.'
+        ]
+      },
+      {
+        id: 'tosta-aguacate-huevo-poche',
+        title: 'Tosta de Espelta Integral con Aguacate, Huevo Poché y Semillas de Cáñamo',
+        category: 'Desayuno',
+        season: 'Primavera / Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '10 min',
+        baseKcal: 380,
+        baseProt: 22,
+        calciumMg: 220,
+        osteoporosisRich: false,
+        color: '#518068',
+        emoji: '🥪',
+        benefits: 'Semillas de cáñamo ricas en magnesio y edestina + grasas cardioprotectoras del aguacate.',
+        ingredients: [
+          { name: 'Pan integral de espelta', amount: 60, unit: 'g' },
+          { name: 'Huevo campero (1-2 unidades)', amount: 75, unit: 'g' },
+          { name: 'Aguacate maduro', amount: 55, unit: 'g' },
+          { name: 'Semillas de cáñamo peladas', amount: 12, unit: 'g' },
+          { name: 'Tomate natural en rodajas', amount: 50, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pon 500 g de agua en el vaso y el huevo envuelto en film engrasado en el cestillo; programa 11 min / Vapor (Varoma) / Vel. 1. Sirve sobre la tosta con aguacate, tomate y cáñamo.'
+        ],
+        stepsTrad: [
+          'Tuesta el pan de espelta, cubre con rodajas de tomate y aguacate machacado, corona con huevo escalfado (3 min en agua hirviendo suave) y semillas de cáñamo.'
+        ]
+      },
+
+      // --- MEDIA MAÑANA / MERIENDA CON FRUTA (8) ---
+      {
+        id: 'snack-manzana-tahini-canela',
+        title: 'Gajos de Manzana Roja con Crema de Sésamo (Tahini), Nueces y Canela',
+        category: 'Media Mañana / Merienda',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '3 min',
+        baseKcal: 185,
+        baseProt: 5,
+        calciumMg: 165,
+        osteoporosisRich: true,
+        color: '#C86D4B',
+        emoji: '🍎',
+        benefits: 'Pectina prebiótica de la manzana + calcio biodisponible del tahini sin picos de glucosa.',
+        ingredients: [
+          { name: 'Manzana roja o reineta con piel lavada', amount: 160, unit: 'g' },
+          { name: 'Tahini tostado o crema de almendra', amount: 12, unit: 'g' },
+          { name: 'Nueces peladas', amount: 10, unit: 'g' },
+          { name: 'Canela de Ceilán en polvo', amount: 1, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Corta la manzana en gajos finos, dispón en un plato, riega con el tahini y espolvorea canela y nueces picadas.'
+        ],
+        stepsTrad: [
+          'Lava y corta la manzana en gajos sin pelar, acompaña con una cucharadita de tahini o crema de almendra, nueces y canela.'
+        ]
+      },
+      {
+        id: 'snack-naranja-yogur-almendras',
+        title: 'Naranja Preparada con Yogur Natural, Almendras Laminadas y Semillas de Lino',
+        category: 'Media Mañana / Merienda',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '4 min',
+        baseKcal: 195,
+        baseProt: 8,
+        calciumMg: 245,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🍊',
+        benefits: 'Vitamina C cítrica + 245 mg de calcio de yogur y almendra + lignanos del lino.',
+        ingredients: [
+          { name: 'Naranja de mesa pelada en rodajas', amount: 170, unit: 'g' },
+          { name: 'Yogur natural o de soja enriquecido en calcio', amount: 125, unit: 'g' },
+          { name: 'Almendras crudas laminadas', amount: 12, unit: 'g' },
+          { name: 'Semillas de lino molidas', amount: 8, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Muele las semillas de lino 8 seg / Vel. 9 en vaso seco y sirve sobre las rodajas de naranja acompañadas de yogur y almendras.'
+        ],
+        stepsTrad: [
+          'Corta la naranja en rodajas finas, acompaña con un yogur natural (o de soja cálcico), almendras laminadas y lino molido.'
+        ]
+      },
+      {
+        id: 'snack-kiwi-kefir-pistachos',
+        title: 'Copa de Kiwi Verde y Dorado con Kéfir Suave y Pistachos Tostados',
+        category: 'Media Mañana / Merienda',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '4 min',
+        baseKcal: 190,
+        baseProt: 8,
+        calciumMg: 210,
+        osteoporosisRich: true,
+        color: '#518068',
+        emoji: '🥝',
+        benefits: 'Actinidina y fibra soluble del kiwi (tránsito intestinal) + probióticos del kéfir.',
+        ingredients: [
+          { name: 'Kiwis maduros pelados en dados', amount: 140, unit: 'g' },
+          { name: 'Kéfir natural suave', amount: 125, unit: 'g' },
+          { name: 'Pistachos pelados sin sal', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Trocea los pistachos 3 seg / Vel. 5 y sirve sobre el kéfir y los dados de kiwi fresco.'
+        ],
+        stepsTrad: [
+          'Pela y trocea los kiwis en un bol, añade el kéfir natural y corona con los pistachos picados.'
+        ]
+      },
+      {
+        id: 'snack-pera-queso-fresco-nueces',
+        title: 'Pera Conferencia en Láminas con Queso Fresco de Cabra y Nueces',
+        category: 'Media Mañana / Merienda',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '4 min',
+        baseKcal: 205,
+        baseProt: 10,
+        calciumMg: 235,
+        osteoporosisRich: true,
+        color: '#315542',
+        emoji: '🍐',
+        benefits: 'Combinación saciante de fibra de fruta entera + proteína y calcio de fácil digestión.',
+        ingredients: [
+          { name: 'Pera conferencia lavada', amount: 160, unit: 'g' },
+          { name: 'Queso fresco tierno de cabra o Burgos', amount: 55, unit: 'g' },
+          { name: 'Nueces peladas', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Corta la pera y el queso fresco en láminas alternas y acompaña con las nueces troceadas.'
+        ],
+        stepsTrad: [
+          'Lamina la pera con piel y el queso fresco tierno; sirve en plato con las nueces por encima.'
+        ]
+      },
+      {
+        id: 'snack-frutos-rojos-batido-soja',
+        title: 'Batido Cremoso de Frutos Rojos, Bebida de Soja Cálcica y Chía',
+        category: 'Media Mañana / Merienda',
+        season: 'Primavera / Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '3 min',
+        baseKcal: 185,
+        baseProt: 9,
+        calciumMg: 270,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🍓',
+        benefits: 'Antocianinas vasculoprotectoras + 270 mg de calcio vegetal en una merienda refrescante.',
+        ingredients: [
+          { name: 'Fresas, arándanos o frambuesas', amount: 130, unit: 'g' },
+          { name: 'Bebida de soja enriquecida en calcio fría', amount: 180, unit: 'g' },
+          { name: 'Semillas de chía', amount: 8, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Tritura los frutos rojos, la bebida de soja cálcica y la chía 25 seg / Vel. 7 y sirve al momento.'
+        ],
+        stepsTrad: [
+          'Bate con batidora de vaso o mano los frutos rojos con la bebida de soja fría y las semillas de chía hasta dejar espumoso.'
+        ]
+      },
+      {
+        id: 'snack-platano-cacao-almendras',
+        title: 'Rodajas de Plátano con Cacao Puro Desgrasado, Yogur y Almendras',
+        category: 'Media Mañana / Merienda',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '3 min',
+        baseKcal: 200,
+        baseProt: 8,
+        calciumMg: 215,
+        osteoporosisRich: true,
+        color: '#4A4238',
+        emoji: '🍌',
+        benefits: 'Potasio, triptófano y magnesio del cacao puro: ideal para merienda antes o después de caminar.',
+        ingredients: [
+          { name: 'Plátano maduro en rodajas', amount: 100, unit: 'g' },
+          { name: 'Yogur natural o griego ligero', amount: 110, unit: 'g' },
+          { name: 'Cacao puro en polvo 100% sin azúcar', amount: 5, unit: 'g' },
+          { name: 'Almendras tostadas sin sal', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Mezcla el yogur con el cacao puro 10 seg / Vel. 3 y sirve sobre las rodajas de plátano con almendras.'
+        ],
+        stepsTrad: [
+          'Remueve el cacao puro dentro del yogur natural hasta obtener una crema de chocolate saludable y sirve con plátano en rodajas y almendras.'
+        ]
+      },
+      {
+        id: 'snack-melocoton-requeson-semillas',
+        title: 'Melocotón o Nectarina Fresca con Requesón y Pipas de Calabaza',
+        category: 'Media Mañana / Merienda',
+        season: 'Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '4 min',
+        baseKcal: 180,
+        baseProt: 10,
+        calciumMg: 195,
+        osteoporosisRich: false,
+        color: '#E08E6D',
+        emoji: '🍑',
+        benefits: 'Betacarotenos de fruta de verano + zinc y magnesio de las semillas de calabaza.',
+        ingredients: [
+          { name: 'Melocotón o nectarina en gajos', amount: 160, unit: 'g' },
+          { name: 'Requesón natural (ricotta)', amount: 65, unit: 'g' },
+          { name: 'Pipas de calabaza tostadas', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Dispón los gajos de fruta fresca en un bol, añade el requesón cremoso y espolvorea las pipas de calabaza.'
+        ],
+        stepsTrad: [
+          'Corta el melocotón lavado en gajos, acompaña con el requesón fresco y termina con pipas de calabaza.'
+        ]
+      },
+      {
+        id: 'snack-mandarinas-edamame-tostado',
+        title: 'Dos Mandarinas Frescas con Puñado de Edamame o Garbanzos Tostados',
+        category: 'Media Mañana / Merienda',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '2 min',
+        baseKcal: 190,
+        baseProt: 11,
+        calciumMg: 155,
+        osteoporosisRich: false,
+        color: '#518068',
+        emoji: '🍊',
+        benefits: 'Snack portátil rico en vitamina C y proteína vegetal de legumbre para llevar en el bolso.',
+        ingredients: [
+          { name: 'Mandarinas frescas (2 piezas)', amount: 160, unit: 'g' },
+          { name: 'Edamame cocido o garbanzos tostados especiados', amount: 60, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Si tuestas garbanzos cocidos en casa, saltea con pimentón y AOVE 8 min / 120°C / Giro inverso / Vel. cuchara y acompaña con las mandarinas.'
+        ],
+        stepsTrad: [
+          'Pela las mandarinas y acompaña con un puñado de edamame cocido al vapor o garbanzos crujientes al horno/sartén.'
+        ]
+      },
+
+      // --- COMIDAS (16: 11 VEGETARIANAS/LEGUMBRES/VERDURAS + 5 CON PESCADO/MARISCO/AVE) ---
+      {
+        id: 'garbanzos-espinacas',
+        title: 'Potaje Mediterráneo de Garbanzos, Espinacas y Sésamo',
+        category: 'Comida',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 450,
+        baseProt: 23,
+        calciumMg: 340,
+        osteoporosisRich: true,
+        color: '#C86D4B',
+        emoji: '🥘',
+        benefits: 'Legumbre + hoja verde + tahini: hierro, magnesio y 340 mg de calcio vegetal biodisponible.',
+        ingredients: [
+          { name: 'Garbanzos cocidos lavados', amount: 180, unit: 'g' },
+          { name: 'Espinacas frescas', amount: 100, unit: 'g' },
+          { name: 'Tomate triturado natural', amount: 80, unit: 'g' },
+          { name: 'Tahini (pasta de sésamo)', amount: 15, unit: 'g' },
+          { name: 'Ajo, pimentón dulce y AOVE', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pica ajo 4 seg / Vel. 7, sofríe con AOVE 3 min / 120°C / Vel. 1. Añade tomate y pimentón 5 min / 100°C / Vel. 1.',
+          'Incorpora garbanzos, tahini y 80 g de agua 6 min / 100°C / Giro inverso / Vel. cuchara, añadiendo espinacas los últimos 2 min.'
+        ],
+        stepsTrad: [
+          'Sofríe ajo en cazuela con AOVE, añade tomate y pimentón 5 min, incorpora garbanzos y tahini con agua 6 min y añade espinacas 2 min al final.'
+        ]
+      },
+      {
+        id: 'salmo-varoma',
+        title: 'Salmón al Vapor con Crema de Brócoli y Almendras',
+        category: 'Comida',
+        season: 'Todo el año',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '25 min',
+        baseKcal: 470,
+        baseProt: 35,
+        calciumMg: 310,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🐟',
+        benefits: 'Abundante brócoli + almendra + omega-3 antiinflamatorio y vitamina D.',
+        ingredients: [
+          { name: 'Lomo de salmón fresco', amount: 150, unit: 'g' },
+          { name: 'Ramilletes de brócoli', amount: 200, unit: 'g' },
+          { name: 'Almendras crudas laminadas', amount: 20, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 12, unit: 'g' },
+          { name: 'Zumo de limón y eneldo', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pon 500 g de agua en el vaso, el brócoli en el cestillo y el salmón en el recipiente de vapor; programa 18 min / Vapor (Varoma) / Vel. 1.',
+          'Deja 60 g de caldo en el vaso, añade brócoli, almendras y AOVE y tritura 30 seg / Vel. 5-8. Sirve bajo el salmón.'
+        ],
+        stepsTrad: [
+          'Cuece el brócoli al vapor 8-10 min y cocina el salmón a la plancha 3-4 min por lado.',
+          'Tritura el brócoli con almendras, AOVE y un poco de agua de cocción; emplata la crema con el salmón encima.'
+        ]
+      },
+      {
+        id: 'lentejas-calabaza-kale',
+        title: 'Lentejas Estofadas con Calabaza, Kale (Col Rizada) y Comino',
+        category: 'Comida',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 460,
+        baseProt: 25,
+        calciumMg: 315,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🍲',
+        benefits: 'Legumbre + col kale de altísima absorción cálcica + hierro vegetal con betacarotenos.',
+        ingredients: [
+          { name: 'Lentejas pardinas cocidas lavadas', amount: 180, unit: 'g' },
+          { name: 'Calabaza en dados pequeños', amount: 130, unit: 'g' },
+          { name: 'Col kale (rizada) sin tallo duro', amount: 85, unit: 'g' },
+          { name: 'Cebolla, ajo y comino molido', amount: 50, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pica ajo y cebolla 4 seg / Vel. 7 y sofríe con AOVE 4 min / 120°C / Vel. 1. Añade calabaza, lentejas, comino y 120 g de agua 8 min / 100°C / Giro inverso / Vel. cuchara, con kale los últimos 3 min.'
+        ],
+        stepsTrad: [
+          'Rehoga ajo y cebolla en cazuela con AOVE, añade calabaza 4 min, incorpora lentejas, comino y agua 8 min y añade kale al final.'
+        ]
+      },
+      {
+        id: 'quinoa-mediterranea-feta',
+        title: 'Tabulé Templado de Quinoa, Garbanzos, Pepino, Menta y Queso Feta',
+        category: 'Comida',
+        season: 'Primavera / Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '15 min',
+        baseKcal: 455,
+        baseProt: 23,
+        calciumMg: 345,
+        osteoporosisRich: true,
+        color: '#315542',
+        emoji: '🥗',
+        benefits: 'Estructura Harvard Plate: 50% hortalizas frescas + garbanzos + quinoa + calcio del feta.',
+        ingredients: [
+          { name: 'Quinoa cocida', amount: 120, unit: 'g' },
+          { name: 'Garbanzos cocidos', amount: 110, unit: 'g' },
+          { name: 'Pepino, tomate y cebolla morada picados', amount: 190, unit: 'g' },
+          { name: 'Queso feta desmenuzado', amount: 40, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra, limón y menta', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Trocea pepino, tomate y cebolla 3 seg / Vel. 4. Mezcla en bol con quinoa cocida, garbanzos, queso feta, menta, limón y AOVE.'
+        ],
+        stepsTrad: [
+          'Pica en daditos pepino, tomate y cebolla morada; mezcla con quinoa cocida, garbanzos, queso feta, hierbabuena, limón y AOVE.'
+        ]
+      },
+      {
+        id: 'alubias-verdin-mejillones',
+        title: 'Fabes o Alubias Blancas Estofadas con Verduras y Almejas',
+        category: 'Comida',
+        season: 'Otoño / Invierno',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 455,
+        baseProt: 30,
+        calciumMg: 310,
+        osteoporosisRich: true,
+        color: '#315542',
+        emoji: '🐚',
+        benefits: 'Base de legumbre rica en calcio + hortalizas + hierro y vitamina B12 marina.',
+        ingredients: [
+          { name: 'Alubias blancas cocidas lavadas', amount: 170, unit: 'g' },
+          { name: 'Almejas o berberechos frescos limpios', amount: 130, unit: 'g' },
+          { name: 'Puerro, zanahoria y ajo picados', amount: 110, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y perejil', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pica puerro, zanahoria y ajo 4 seg / Vel. 5 y sofríe con AOVE 5 min / 120°C / Vel. 1. Añade alubias y 100 g de agua 6 min / 100°C / Giro inverso / Vel. cuchara, poniendo las almejas en vapor los últimos 4 min.'
+        ],
+        stepsTrad: [
+          'Rehoga puerro, zanahoria y ajo en cazuela con AOVE, añade alubias cocidas y caldo; incorpora las almejas limpias, tapa 4 min hasta que abran y espolvorea perejil.'
+        ]
+      },
+      {
+        id: 'curry-tempeh-coliflor',
+        title: 'Curry Mediterráneo de Tempeh, Coliflor y Almendras',
+        category: 'Comida',
+        season: 'Invierno / Primavera',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 485,
+        baseProt: 28,
+        calciumMg: 330,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🍛',
+        benefits: 'Legumbre fermentada (tempeh) + crucífera + cúrcuma antiinflamatoria.',
+        ingredients: [
+          { name: 'Tempeh de soja o garbanzo en dados', amount: 120, unit: 'g' },
+          { name: 'Coliflor en ramilletes pequeños', amount: 170, unit: 'g' },
+          { name: 'Leche de coco ligera o bebida vegetal', amount: 100, unit: 'g' },
+          { name: 'Almendras crudas', amount: 15, unit: 'g' },
+          { name: 'Aceite de oliva, cúrcuma y curry suave', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe tempeh en dados con AOVE, cúrcuma y curry 4 min / 120°C / Giro inverso / Vel. cuchara. Añade coliflor y leche de coco 10 min / 100°C / Giro inverso / Vel. cuchara. Corona con almendras.'
+        ],
+        stepsTrad: [
+          'Dora el tempeh en cazuela con AOVE y especias, añade coliflor en floretes y leche de coco; tapa 10 min y termina con almendras.'
+        ]
+      },
+      {
+        id: 'empedrat-alubias-bacalao',
+        title: 'Empedrat Mediterráneo de Alubias Blancas, Bacalao Desmigado y Pimiento',
+        category: 'Comida',
+        season: 'Primavera / Verano',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '12 min',
+        baseKcal: 450,
+        baseProt: 32,
+        calciumMg: 285,
+        osteoporosisRich: true,
+        color: '#315542',
+        emoji: '🥗',
+        benefits: 'Clásico mediterráneo con base de legumbre y hortalizas frescas + lascas de bacalao.',
+        ingredients: [
+          { name: 'Alubias blancas cocidas lavadas', amount: 170, unit: 'g' },
+          { name: 'Lomo de bacalao desalado desmigado', amount: 105, unit: 'g' },
+          { name: 'Pimiento rojo, verde y tomate en dados', amount: 170, unit: 'g' },
+          { name: 'Aceitunas negras y AOVE', amount: 25, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Trocea pimientos y tomate 3 seg / Vel. 4. Mezcla en ensaladera con las alubias, lascas de bacalao desalado, aceitunas negras y AOVE.'
+        ],
+        stepsTrad: [
+          'Pica en brunoise pimiento rojo, verde y tomate; mezcla en un bol con alubias blancas cocidas, bacalao desalado en lascas, aceitunas y AOVE.'
+        ]
+      },
+      {
+        id: 'albondigas-lentejas-salsa-almendras',
+        title: 'Albóndigas Vegetales de Lentejas y Avena en Salsa Española de Almendras',
+        category: 'Comida',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '25 min',
+        baseKcal: 480,
+        baseProt: 25,
+        calciumMg: 325,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🧆',
+        benefits: 'Proteína de lentejas + salsa tradicional mediterránea de almendra rica en calcio y vitamina E.',
+        ingredients: [
+          { name: 'Lentejas cocidas muy escurridas', amount: 170, unit: 'g' },
+          { name: 'Copos de avena molidos', amount: 30, unit: 'g' },
+          { name: 'Almendras crudas peladas', amount: 25, unit: 'g' },
+          { name: 'Cebolla, ajo, azafrán y caldo vegetal', amount: 150, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Tritura lentejas y avena 10 seg / Vel. 5, forma bolitas y cuécelas al vapor 12 min / Varoma / Vel. 1 mientras sofríes cebolla, ajo y almendras y trituras la salsa 30 seg / Vel. 8.'
+        ],
+        stepsTrad: [
+          'Chafa las lentejas con avena y especias, forma albóndigas y dóralas en sartén; prepara la salsa triturando cebolla pochada, almendras y caldo y cocina todo junto 6 min.'
+        ]
+      },
+      {
+        id: 'arroz-integral-edamame',
+        title: 'Arroz Integral Meloso de Setas, Edamame (Soja Verde) y Levadura Nutricional',
+        category: 'Comida',
+        season: 'Otoño / Primavera',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '18 min',
+        baseKcal: 470,
+        baseProt: 24,
+        calciumMg: 240,
+        osteoporosisRich: false,
+        color: '#518068',
+        emoji: '🍚',
+        benefits: 'Legumbre verde (edamame) + setas + cereal integral: combinación proteica completa.',
+        ingredients: [
+          { name: 'Arroz integral cocido', amount: 150, unit: 'g' },
+          { name: 'Setas variadas laminadas', amount: 140, unit: 'g' },
+          { name: 'Edamame pelado (soja verde)', amount: 100, unit: 'g' },
+          { name: 'Levadura nutricional en copos', amount: 15, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y ajo', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe setas y ajo con AOVE 5 min / 120°C / Giro inverso / Vel. cuchara. Añade arroz integral cocido, edamame, levadura nutricional y 80 g de caldo 5 min / 100°C / Giro inverso / Vel. cuchara.'
+        ],
+        stepsTrad: [
+          'Saltea setas con ajo en sartén, incorpora edamame, arroz integral cocido, caldo y levadura nutricional; remueve 4 min hasta que quede meloso.'
+        ]
+      },
+      {
+        id: 'caballa-escalivada',
+        title: 'Lomos de Caballa al Vapor sobre Escalivada de Pimiento y Berenjena',
+        category: 'Comida',
+        season: 'Verano / Otoño',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '25 min',
+        baseKcal: 465,
+        baseProt: 33,
+        calciumMg: 260,
+        osteoporosisRich: false,
+        color: '#C86D4B',
+        emoji: '🐠',
+        benefits: 'Abundante verdura asada mediterránea + pescado azul rico en vitamina D y omega-3.',
+        ingredients: [
+          { name: 'Lomos de caballa limpios', amount: 150, unit: 'g' },
+          { name: 'Pimiento rojo y berenjena en tiras', amount: 240, unit: 'g' },
+          { name: 'Cebolla morada en juliana', amount: 70, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 14, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe pimiento, berenjena y cebolla con AOVE 12 min / 120°C / Giro inverso / Vel. cuchara. Coloca caballa en bandeja vapor y programa 8 min / Vapor (Varoma) / Vel. 1.'
+        ],
+        stepsTrad: [
+          'Pocha tapadas en sartén las tiras de pimiento, berenjena y cebolla con AOVE 15 min; cocina la caballa a la plancha 3 min por piel y sirve encima.'
+        ]
+      },
+      {
+        id: 'pastela-vegetal-garbanzos-almendra',
+        title: 'Cuscús Integral Mediterráneo con Garbanzos, Calabacín, Zanahoria y Almendra',
+        category: 'Comida',
+        season: 'Primavera / Otoño',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '15 min',
+        baseKcal: 465,
+        baseProt: 21,
+        calciumMg: 290,
+        osteoporosisRich: true,
+        color: '#C86D4B',
+        emoji: '🥘',
+        benefits: 'Garbanzos + hortalizas especiadas + almendras ricas en calcio y magnesio.',
+        ingredients: [
+          { name: 'Cuscús integral hidratado', amount: 130, unit: 'g' },
+          { name: 'Garbanzos cocidos', amount: 130, unit: 'g' },
+          { name: 'Calabacín y zanahoria en daditos', amount: 170, unit: 'g' },
+          { name: 'Almendras tostadas y unas pasas', amount: 22, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y comino', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe calabacín y zanahoria con AOVE y comino 7 min / 120°C / Giro inverso / Vel. cuchara. Añade garbanzos 3 min / 100°C / Giro inverso / Vel. cuchara y mezcla con el cuscús hidratado y almendras.'
+        ],
+        stepsTrad: [
+          'Saltea calabacín y zanahoria en daditos con AOVE y comino 7 min, añade garbanzos cocidos 3 min y mezcla en fuente con cuscús integral hidratado y almendras tostadas.'
+        ]
+      },
+      {
+        id: 'wok-soja-texturizada-verduras',
+        title: 'Boloñesa Mediterránea de Soja Texturizada y Verduras con Pasta de Lentejas',
+        category: 'Comida',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 485,
+        baseProt: 33,
+        calciumMg: 295,
+        osteoporosisRich: true,
+        color: '#C86D4B',
+        emoji: '🍝',
+        benefits: '100% legumbre (pasta de lentejas + soja texturizada) + verduras y licopeno del tomate.',
+        ingredients: [
+          { name: 'Pasta integral o de lentejas rojas (en seco)', amount: 65, unit: 'g' },
+          { name: 'Soja texturizada fina hidratada', amount: 45, unit: 'g' },
+          { name: 'Tomate triturado natural', amount: 130, unit: 'g' },
+          { name: 'Zanahoria, calabacín, cebolla y orégano', amount: 110, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pica zanahoria, calabacín y cebolla 4 seg / Vel. 6 y sofríe con AOVE 5 min / 120°C / Vel. 1. Añade soja hidratada, tomate y orégano 10 min / 100°C / Giro inverso / Vel. cuchara. Sirve sobre la pasta.'
+        ],
+        stepsTrad: [
+          'Cuece la pasta 8 min. En sartén sofríe cebolla, zanahoria y calabacín picados, añade la soja texturizada escurrida, tomate triturado y orégano; cocina 10 min y mezcla.'
+        ]
+      },
+      {
+        id: 'guiso-sepia-guisantes',
+        title: 'Guiso Marinero de Guisantes Tiernos, Alcachofas y Sepia',
+        category: 'Comida',
+        season: 'Primavera / Invierno',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '22 min',
+        baseKcal: 440,
+        baseProt: 34,
+        calciumMg: 215,
+        osteoporosisRich: false,
+        color: '#3D6B52',
+        emoji: '🦑',
+        benefits: 'Prevalencia de guisantes (legumbre fresca) y alcachofas + proteína magra marina.',
+        ingredients: [
+          { name: 'Guisantes tiernos', amount: 130, unit: 'g' },
+          { name: 'Corazones de alcachofa troceados', amount: 140, unit: 'g' },
+          { name: 'Sepia limpia en dados', amount: 140, unit: 'g' },
+          { name: 'Ajo, perejil y tomate rallado', amount: 60, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe ajo y tomate con AOVE 4 min / 120°C / Vel. 1. Añade sepia, alcachofas, guisantes y 60 g de agua 14 min / 100°C / Giro inverso / Vel. cuchara.'
+        ],
+        stepsTrad: [
+          'Sofríe ajo y tomate en cazuela con AOVE, añade sepia, alcachofas y guisantes con medio vaso de agua y cuece tapado 15 min.'
+        ]
+      },
+      {
+        id: 'calabacines-rellenos-ricotta-nueces',
+        title: 'Calabacines Rellenos de Lentejas, Requesón, Espinacas y Nueces',
+        category: 'Comida',
+        season: 'Primavera / Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '25 min',
+        baseKcal: 450,
+        baseProt: 25,
+        calciumMg: 390,
+        osteoporosisRich: true,
+        color: '#518068',
+        emoji: '🥒',
+        benefits: 'Hortaliza rellena de legumbre, requesón y nueces: 390 mg de calcio por ración.',
+        ingredients: [
+          { name: 'Calabacín mediano abierto por la mitad', amount: 240, unit: 'g' },
+          { name: 'Lentejas cocidas escurridas', amount: 80, unit: 'g' },
+          { name: 'Requesón natural (ricotta)', amount: 90, unit: 'g' },
+          { name: 'Espinacas frescas', amount: 80, unit: 'g' },
+          { name: 'Nueces picadas y AOVE', amount: 22, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece las mitades de calabacín al vapor 12 min / Varoma / Vel. 1. Vacía la pulpa, mezcla con lentejas, requesón, espinacas salteadas y nueces 10 seg / Giro inverso / Vel. 3 y gratina 4 min.'
+        ],
+        stepsTrad: [
+          'Cuece al vapor los calabacines partidos 8 min, vacía la pulpa y mézclala en sartén con espinacas, lentejas, requesón y nueces; rellena y gratina 5 min.'
+        ]
+      },
+      {
+        id: 'pollo-corral-limon-brocoli',
+        title: 'Salteado Abundante de Brócoli, Judías Verdes y Pechuga de Corral al Limón',
+        category: 'Comida',
+        season: 'Todo el año',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '22 min',
+        baseKcal: 465,
+        baseProt: 37,
+        calciumMg: 245,
+        osteoporosisRich: false,
+        color: '#518068',
+        emoji: '🥦',
+        benefits: 'Doble ración de verdura verde (brócoli + judía redonda) + proteína magra de alta saciedad.',
+        ingredients: [
+          { name: 'Brócoli y judías verdes redondas', amount: 250, unit: 'g' },
+          { name: 'Pechuga de pollo de corral en tiras', amount: 140, unit: 'g' },
+          { name: 'Garbanzos cocidos o boniato en dados', amount: 80, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra, limón y orégano', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece brócoli y judías verdes al vapor 14 min / Vapor (Varoma) / Vel. 1. Saltea el pollo macerado con limón, orégano y AOVE 5 min / 120°C / Giro inverso / Vel. cuchara.'
+        ],
+        stepsTrad: [
+          'Cuece al vapor el brócoli y las judías verdes 10-12 min; saltea aparte el pollo macerado con limón y orégano con AOVE y sirve junto a los garbanzos o boniato.'
+        ]
+      },
+      {
+        id: 'puchero-alubias-pintas-verduras',
+        title: 'Estofado Tradicional de Alubias Pintas con Pimiento, Zanahoria y Laurel',
+        category: 'Comida',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 465,
+        baseProt: 23,
+        calciumMg: 280,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🍲',
+        benefits: 'Receta tradicional española 100% vegetal (Fundación Dieta Mediterránea) rica en polifenoles y fibra.',
+        ingredients: [
+          { name: 'Alubias pintas cocidas lavadas', amount: 190, unit: 'g' },
+          { name: 'Pimiento rojo, zanahoria y puerro picados', amount: 150, unit: 'g' },
+          { name: 'Tomate triturado y hoja de laurel', amount: 70, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y pimentón', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pica pimiento, zanahoria y puerro 4 seg / Vel. 5 y sofríe con AOVE 6 min / 120°C / Vel. 1. Añade tomate, pimentón, alubias pintas, laurel y 100 g de agua 8 min / 100°C / Giro inverso / Vel. cuchara.'
+        ],
+        stepsTrad: [
+          'Rehoga las verduras picadas en cazuela con AOVE 7 min, añade pimentón, tomate, las alubias pintas cocidas, laurel y medio vaso de agua y cuece 8 min a fuego suave.'
+        ]
+      },
+
+      // --- CENAS (16: 11 VEGETARIANAS/LEGUMBRES/VERDURAS + 5 CON PESCADO/MARISCO) ---
+      {
+        id: 'ensalada-templada-tofu',
+        title: 'Salteado Templado de Brócoli, Pimiento Rojo, Tofu Cálcico y Sésamo',
+        category: 'Cena',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '15 min',
+        baseKcal: 395,
+        baseProt: 26,
+        calciumMg: 420,
+        osteoporosisRich: true,
+        color: '#729D87',
+        emoji: '🥦',
+        benefits: 'Verdura + derivado de legumbre (tofu) cuajado con calcio: 420 mg de calcio por ración.',
+        ingredients: [
+          { name: 'Brócoli en ramilletes pequeños', amount: 170, unit: 'g' },
+          { name: 'Tofu firme (cuajado con calcio)', amount: 145, unit: 'g' },
+          { name: 'Pimiento rojo en tiras', amount: 70, unit: 'g' },
+          { name: 'Salsa de soja baja en sal y AOVE', amount: 15, unit: 'g' },
+          { name: 'Semillas de sésamo tostadas', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Saltea brócoli y pimiento con AOVE 7 min / 120°C / Giro inverso / Vel. cuchara; añade tofu en dados y salsa de soja 3 min / 120°C / Giro inverso / Vel. cuchara. Sirve con sésamo.'
+        ],
+        stepsTrad: [
+          'Saltea brócoli y pimiento en wok con AOVE 6 min, incorpora tofu en dados y salsa de soja 4 min más y espolvorea sésamo tostado.'
+        ]
+      },
+      {
+        id: 'crema-calabacin-merluza',
+        title: 'Crema Abundante de Calabacín y Puerro con Lomo de Merluza al Vapor',
+        category: 'Cena',
+        season: 'Todo el año',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '25 min',
+        baseKcal: 375,
+        baseProt: 31,
+        calciumMg: 165,
+        osteoporosisRich: false,
+        color: '#315542',
+        emoji: '🍲',
+        benefits: 'Base de 280 g de verdura + pescado blanco al vapor: cena digestiva que favorece el descanso.',
+        ingredients: [
+          { name: 'Calabacín con piel lavada', amount: 220, unit: 'g' },
+          { name: 'Puerro (parte blanca)', amount: 80, unit: 'g' },
+          { name: 'Lomo de merluza sin espinas', amount: 150, unit: 'g' },
+          { name: 'Queso fresco batido o yogur natural', amount: 30, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe puerro con AOVE 4 min / 120°C / Vel. 1. Añade calabacín y 250 g de agua y coloca merluza en bandeja vapor 18 min / Varoma / Vel. 1. Tritura crema con queso batido 1 min / Vel. 5-9.'
+        ],
+        stepsTrad: [
+          'Rehoga puerro con AOVE, cuece calabacín con agua 15 min haciendo la merluza al vapor encima los últimos 5 min; tritura la crema con queso batido y sirve con el pescado.'
+        ]
+      },
+      {
+        id: 'ensalada-alubias-negras-feta',
+        title: 'Ensalada Templada de Alubias Negras, Brócoli al Vapor y Queso Feta',
+        category: 'Cena',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '12 min',
+        baseKcal: 410,
+        baseProt: 23,
+        calciumMg: 375,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🫘',
+        benefits: 'Legumbre oscura rica en antocianinas + brócoli + calcio del queso feta.',
+        ingredients: [
+          { name: 'Alubias negras cocidas lavadas', amount: 130, unit: 'g' },
+          { name: 'Brócoli en floretes', amount: 160, unit: 'g' },
+          { name: 'Aguacate maduro', amount: 40, unit: 'g' },
+          { name: 'Queso feta desmenuzado', amount: 35, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece brócoli en el cestillo con 400 g de agua 10 min / Vapor (Varoma) / Vel. 1. Mezcla templado en bol con alubias negras, aguacate, feta y AOVE.'
+        ],
+        stepsTrad: [
+          'Cuece el brócoli al vapor 7-8 min; mézclalo templado con alubias negras lavadas, aguacate en dados, queso feta y AOVE.'
+        ]
+      },
+      {
+        id: 'crema-zanahoria-huevo',
+        title: 'Crema de Zanahoria, Puerro y Jengibre con Huevo Poché y Pipas',
+        category: 'Cena',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 360,
+        baseProt: 18,
+        calciumMg: 190,
+        osteoporosisRich: false,
+        color: '#C86D4B',
+        emoji: '🥕',
+        benefits: 'Más de 270 g de hortalizas + triptófano del huevo para un descanso reparador.',
+        ingredients: [
+          { name: 'Zanahoria pelada en rodajas', amount: 220, unit: 'g' },
+          { name: 'Puerro y jengibre fresco rallado', amount: 60, unit: 'g' },
+          { name: 'Huevo campero (1-2 unidades)', amount: 75, unit: 'g' },
+          { name: 'Pipas de girasol tostadas', amount: 15, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Rehoga zanahoria, puerro y jengibre con AOVE 5 min / 120°C / Vel. 1. Añade 250 g de agua 15 min / 100°C / Vel. 1 y tritura 1 min / Vel. 5-9. Sirve con huevo poché y pipas.'
+        ],
+        stepsTrad: [
+          'Rehoga zanahoria, puerro y jengibre en olla con AOVE, cuece con agua 15 min, tritura fino y corona con huevo escalfado y pipas de girasol.'
+        ]
+      },
+      {
+        id: 'carpaccio-calabacin-sardinas-almendra',
+        title: 'Ensalada de Calabacín Laminado, Sardinillas con Espina, Queso y Almendra',
+        category: 'Cena',
+        season: 'Verano / Primavera',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '10 min',
+        baseKcal: 390,
+        baseProt: 27,
+        calciumMg: 430,
+        osteoporosisRich: true,
+        color: '#518068',
+        emoji: '🐟',
+        benefits: '430 mg de calcio + vitamina D + omega-3 sobre base fresca de calabacín marinado.',
+        ingredients: [
+          { name: 'Calabacín tierno en cintas finas', amount: 190, unit: 'g' },
+          { name: 'Sardinillas en AOVE (con espina)', amount: 80, unit: 'g' },
+          { name: 'Lascas de queso curado de oveja', amount: 20, unit: 'g' },
+          { name: 'Almendras laminadas y limón', amount: 15, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Lamina el calabacín muy fino, alíñalo con limón y unas gotas del aceite de las sardinillas y corona con las sardinillas, lascas de queso y almendras.'
+        ],
+        stepsTrad: [
+          'Corta el calabacín tierno en cintas finas con pelador, macera 5 min con limón y AOVE y sirve con las sardinillas con espina, lascas de queso curado y almendras.'
+        ]
+      },
+      {
+        id: 'pisto-manchego-huevo',
+        title: 'Pisto Mediterráneo de Huerta con Huevo Cuajado y Queso Tierno',
+        category: 'Cena',
+        season: 'Verano / Otoño',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 385,
+        baseProt: 21,
+        calciumMg: 280,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🍆',
+        benefits: '340 g de hortalizas mediterráneas + licopeno + proteína completa del huevo.',
+        ingredients: [
+          { name: 'Calabacín, berenjena y pimiento en dados', amount: 240, unit: 'g' },
+          { name: 'Tomate triturado natural', amount: 100, unit: 'g' },
+          { name: 'Huevos camperos (1-2 unidades)', amount: 85, unit: 'g' },
+          { name: 'Queso tierno de cabra en dados', amount: 30, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe calabacín, berenjena y pimiento con AOVE 10 min / 120°C / Giro inverso / Vel. cuchara; añade tomate 6 min / 100°C / Giro inverso / Vel. cuchara. Sirve con huevo poché y queso.'
+        ],
+        stepsTrad: [
+          'Pocha las verduras en dados en cazuela con AOVE 10 min, añade tomate triturado 8 min más, casca el huevo encima tapado 3 min y añade daditos de queso.'
+        ]
+      },
+      {
+        id: 'revuelto-tofu-curcuma',
+        title: 'Revuelto Mediterráneo de Tofu Desmenuzado, Pimiento y Aceitunas',
+        category: 'Cena',
+        season: 'Primavera / Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '12 min',
+        baseKcal: 375,
+        baseProt: 25,
+        calciumMg: 410,
+        osteoporosisRich: true,
+        color: '#518068',
+        emoji: '🫒',
+        benefits: 'Derivado de legumbre (soja) + hortalizas + 410 mg de calcio elemental por ración.',
+        ingredients: [
+          { name: 'Tofu firme (cuajado con calcio)', amount: 155, unit: 'g' },
+          { name: 'Pimiento rojo y calabacín picados', amount: 110, unit: 'g' },
+          { name: 'Aceitunas negras de Aragón laminadas', amount: 20, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y cúrcuma', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe pimiento y calabacín con AOVE 5 min / 120°C / Vel. 1; añade tofu desmenuzado y cúrcuma 4 min / 100°C / Giro inverso / Vel. cuchara y mezcla con aceitunas.'
+        ],
+        stepsTrad: [
+          'Saltea pimiento y calabacín en sartén con AOVE, desmenuza encima el tofu con cúrcuma 4 min y termina con aceitunas negras.'
+        ]
+      },
+      {
+        id: 'crema-calabaza-garbanzos-crujientes',
+        title: 'Crema de Calabaza Asada con Garbanzos Especiados Crujientes',
+        category: 'Cena',
+        season: 'Otoño / Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '22 min',
+        baseKcal: 380,
+        baseProt: 19,
+        calciumMg: 210,
+        osteoporosisRich: false,
+        color: '#C86D4B',
+        emoji: '🎃',
+        benefits: 'Hortaliza dulce de temporada + garbanzos crujientes saciantes en lugar de picatostes.',
+        ingredients: [
+          { name: 'Calabaza pelada en dados', amount: 240, unit: 'g' },
+          { name: 'Garbanzos cocidos escurridos', amount: 85, unit: 'g' },
+          { name: 'Cebolla dulce', amount: 50, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y pimentón', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Sofríe cebolla y calabaza con 8 g de AOVE 5 min / 120°C / Vel. 1; añade 220 g de agua 15 min / 100°C / Vel. 1 y tritura 1 min / Vel. 5-9. Sirve con garbanzos salteados con pimentón.'
+        ],
+        stepsTrad: [
+          'Cuece calabaza y cebolla rehogadas 15 min y tritura fino; mientras tanto saltea los garbanzos en sartén con unas gotas de AOVE y pimentón hasta que queden crujientes.'
+        ]
+      },
+      {
+        id: 'mejillones-vapor-vinagreta',
+        title: 'Mejillones al Vapor con Picadillo de Hortalizas y Crema de Puerros',
+        category: 'Cena',
+        season: 'Otoño / Invierno',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '18 min',
+        baseKcal: 365,
+        baseProt: 29,
+        calciumMg: 245,
+        osteoporosisRich: false,
+        color: '#315542',
+        emoji: '🦪',
+        benefits: 'Crema de verduras + picadillo fresco + vitamina B12 y hierro de fácil digestión.',
+        ingredients: [
+          { name: 'Puerro y calabacín para crema ligera', amount: 200, unit: 'g' },
+          { name: 'Mejillones frescos limpios (con concha)', amount: 280, unit: 'g' },
+          { name: 'Pimiento verde, cebolla y tomate picados', amount: 70, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y vinagre', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece puerro y calabacín con 200 g de agua mientras abres mejillones en vapor 12 min / Varoma / Vel. 1. Tritura crema 40 seg / Vel. 7 y sirve con vinagreta.'
+        ],
+        stepsTrad: [
+          'Abre los mejillones al vapor 4 min en olla tapada; sirve con crema ligera de puerro y calabacín y picadillo de hortalizas con AOVE.'
+        ]
+      },
+      {
+        id: 'frittata-esparragos-ricotta',
+        title: 'Frittata de Espárragos Verdes, Requesón y Eneldo',
+        category: 'Cena',
+        season: 'Primavera',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '18 min',
+        baseKcal: 375,
+        baseProt: 25,
+        calciumMg: 330,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🌿',
+        benefits: 'Abundante espárrago verde diurético + calcio del requesón.',
+        ingredients: [
+          { name: 'Espárragos verdes troceados', amount: 150, unit: 'g' },
+          { name: 'Huevos camperos (2 unidades)', amount: 120, unit: 'g' },
+          { name: 'Requesón natural en cucharaditas', amount: 60, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y eneldo', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Saltea los espárragos troceados con AOVE 5 min / 120°C / Giro inverso / Vel. cuchara; mezcla con huevos batidos y requesón y cuaja en sartén tapada 5 min a fuego bajo.'
+        ],
+        stepsTrad: [
+          'Saltea los espárragos troceados en sartén con AOVE 5 min, vierte los huevos batidos, reparte cucharaditas de requesón y tapa 5 min a fuego muy suave hasta cuajar.'
+        ]
+      },
+      {
+        id: 'gazpacho-almendras-huevo',
+        title: 'Ajoblanco Suave de Almendras con Virutas de Huevo Duro y Uvas',
+        category: 'Cena',
+        season: 'Verano',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '10 min',
+        baseKcal: 390,
+        baseProt: 19,
+        calciumMg: 285,
+        osteoporosisRich: true,
+        color: '#729D87',
+        emoji: '🥣',
+        benefits: 'Clásico mediterráneo de verano (Fundación Dieta Mediterránea): calcio y magnesio de almendra cruda.',
+        ingredients: [
+          { name: 'Almendra cruda pelada', amount: 45, unit: 'g' },
+          { name: 'Huevo cocido picado (1-2 unidades)', amount: 75, unit: 'g' },
+          { name: 'Miga de pan integral o copos de avena', amount: 25, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y vinagre', amount: 15, unit: 'g' },
+          { name: 'Uvas o daditos de melón', amount: 60, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Tritura almendras, avena/pan, ajo, AOVE, vinagre y 220 g de agua fría 1 min / Vel. 5-10. Sirve frío con huevo duro picado y uvas.'
+        ],
+        stepsTrad: [
+          'Bate almendras crudas, pan/avena remojado, ajo, AOVE, vinagre y agua fría hasta emulsionar; sirve frío con huevo cocido picado y uvas.'
+        ]
+      },
+      {
+        id: 'sopa-miso-mediterranea-tofu',
+        title: 'Caldo Reconfortante de Verduras, Tofu Sedoso, Wakame y Sésamo',
+        category: 'Cena',
+        season: 'Invierno',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '15 min',
+        baseKcal: 340,
+        baseProt: 23,
+        calciumMg: 365,
+        osteoporosisRich: true,
+        color: '#315542',
+        emoji: '🍜',
+        benefits: 'Hortalizas + derivado de legumbre (tofu) + sésamo: muy ligero y rico en calcio.',
+        ingredients: [
+          { name: 'Puerro, zanahoria y champiñones laminados', amount: 170, unit: 'g' },
+          { name: 'Tofu firme o sedoso en daditos', amount: 140, unit: 'g' },
+          { name: 'Alga wakame hidratada (pizca)', amount: 5, unit: 'g' },
+          { name: 'Miso blanco o caldo vegetal suave', amount: 15, unit: 'g' },
+          { name: 'Semillas de sésamo y AOVE', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece puerro, zanahoria y champiñones en 350 g de agua 10 min / 100°C / Giro inverso / Vel. cuchara; añade tofu y wakame 2 min y disuelve el miso fuera del calor.'
+        ],
+        stepsTrad: [
+          'Hierve suavemente puerro, zanahoria y champiñones en caldo 10 min, añade tofu en dados y wakame 2 min, apaga el fuego, disuelve el miso y sirve con sésamo.'
+        ]
+      },
+      {
+        id: 'alcachofas-jamon-huevo-vapor',
+        title: 'Corazones de Alcachofa al Vapor con Huevo Poché y Virutas de Ibérico',
+        category: 'Cena',
+        season: 'Invierno / Primavera',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '20 min',
+        baseKcal: 370,
+        baseProt: 25,
+        calciumMg: 175,
+        osteoporosisRich: false,
+        color: '#3D6B52',
+        emoji: '🥬',
+        benefits: '200 g de alcachofas ricas en inulina prebiótica + proteína completa.',
+        ingredients: [
+          { name: 'Corazones de alcachofa limpios', amount: 200, unit: 'g' },
+          { name: 'Huevo campero cocido o poché', amount: 75, unit: 'g' },
+          { name: 'Virutas de jamón ibérico', amount: 25, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y ajo', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece las alcachofas en el cestillo con 400 g de agua y el huevo en el vapor 15 min / Varoma / Vel. 1. Saltea rápido con ajo y AOVE y sirve con jamón y huevo.'
+        ],
+        stepsTrad: [
+          'Cuece los corazones de alcachofa al vapor 14 min, saltéalos 2 min con ajo laminado y AOVE y sirve con el huevo cocido picado y virutas de jamón.'
+        ]
+      },
+      {
+        id: 'ensalada-tempeh-remolacha-naranja',
+        title: 'Ensalada Templada de Tempeh Dorado, Remolacha, Naranja y Nueces',
+        category: 'Cena',
+        season: 'Invierno / Primavera',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '15 min',
+        baseKcal: 405,
+        baseProt: 24,
+        calciumMg: 290,
+        osteoporosisRich: true,
+        color: '#B05737',
+        emoji: '🍊',
+        benefits: 'Legumbre fermentada + hortalizas + vitamina C que potencia la absorción mineral.',
+        ingredients: [
+          { name: 'Tempeh en tiras finas', amount: 110, unit: 'g' },
+          { name: 'Remolacha cocida en dados y brotes verdes', amount: 160, unit: 'g' },
+          { name: 'Gajos de naranja fresca', amount: 80, unit: 'g' },
+          { name: 'Nueces y semillas de sésamo', amount: 18, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Dora las tiras de tempeh con AOVE 5 min / 120°C / Giro inverso / Vel. cuchara y sirve templado sobre brotes verdes, remolacha, naranja, nueces y sésamo.'
+        ],
+        stepsTrad: [
+          'Dora el tempeh en sartén con AOVE 4 min; monta en plato sobre brotes verdes, remolacha en dados, gajos de naranja, nueces y sésamo.'
+        ]
+      },
+      {
+        id: 'pulpo-cachelos-pimenton',
+        title: 'Pulpo con Ensalada Templada de Judías Verdes, Patata y Pimentón',
+        category: 'Cena',
+        season: 'Todo el año',
+        vegetarian: false,
+        legumeOrVegMain: true,
+        time: '18 min',
+        baseKcal: 385,
+        baseProt: 30,
+        calciumMg: 195,
+        osteoporosisRich: false,
+        color: '#C86D4B',
+        emoji: '🐙',
+        benefits: 'Base de judías verdes y patata al vapor + proteína marina rica en selenio y zinc.',
+        ingredients: [
+          { name: 'Judías verdes redondas troceadas', amount: 150, unit: 'g' },
+          { name: 'Pulpo cocido en rodajas', amount: 130, unit: 'g' },
+          { name: 'Patata gallega en rodajas', amount: 100, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra y pimentón', amount: 12, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Pon 500 g de agua en el vaso, coloca judías verdes y patata en el cestillo y el pulpo en el vapor los últimos 4 min: programa 15 min / Vapor (Varoma) / Vel. 1. Aliña con AOVE y pimentón.'
+        ],
+        stepsTrad: [
+          'Cuece las judías verdes y la patata al vapor 14 min, añade el pulpo encima los últimos 3 min para templarlo y sirve con AOVE y pimentón de la Vera.'
+        ]
+      },
+      {
+        id: 'crema-brocoli-queso-azul-nueces',
+        title: 'Crema Verde de Brócoli y Espinacas con Requesón, Huevo y Almendras',
+        category: 'Cena',
+        season: 'Todo el año',
+        vegetarian: true,
+        legumeOrVegMain: true,
+        time: '18 min',
+        baseKcal: 375,
+        baseProt: 24,
+        calciumMg: 395,
+        osteoporosisRich: true,
+        color: '#3D6B52',
+        emoji: '🥦',
+        benefits: 'Doble ración de verdura verde + requesón y almendra: 395 mg de calcio nocturno.',
+        ingredients: [
+          { name: 'Brócoli y espinacas frescas', amount: 220, unit: 'g' },
+          { name: 'Requesón natural o yogur griego', amount: 50, unit: 'g' },
+          { name: 'Huevo cocido picado (1 unidad)', amount: 60, unit: 'g' },
+          { name: 'Almendras laminadas', amount: 15, unit: 'g' },
+          { name: 'Aceite de oliva virgen extra', amount: 10, unit: 'g' }
+        ],
+        stepsRobot: [
+          'Cuece brócoli y espinacas con 220 g de agua 10 min / 100°C / Vel. 1; añade requesón y AOVE y tritura 45 seg / Vel. 5-9. Sirve con huevo picado y almendras.'
+        ],
+        stepsTrad: [
+          'Cuece brócoli y espinacas en poca agua 8 min, tritura con requesón y AOVE hasta dejar cremoso y corona con huevo cocido picado y almendras.'
+        ]
+      }
+    ];
+
+    // ==========================================
+    // 2. ESTADO PERSISTENTE EN LOCALSTORAGE
+    // ==========================================
+    const DEFAULT_STATE = {
+      profile: {
+        name: '',
+        age: 52,
+        weight: 65,
+        height: 163,
+        activity: 1.375,
+        goal: 'maintain',
+        focus: 'general',
+        diet: 'mediterranea'
+      },
+      cookingMode: 'robot',
+      filter: 'todas',
+      selectedWeek: 1,
+      monthlyPlans: {},
+      checkedItems: {},
+      customPhotos: {}
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem('menomix_v5_state') || localStorage.getItem('menomix_v4_state');
+        if (!raw) {
+          const fresh = JSON.parse(JSON.stringify(DEFAULT_STATE));
+          fresh.monthlyPlans = buildMonthlyRotation(fresh.profile);
+          return fresh;
+        }
+        const parsed = JSON.parse(raw);
+        const merged = {
+          ...DEFAULT_STATE,
+          ...parsed,
+          profile: { ...DEFAULT_STATE.profile, ...(parsed.profile || {}) }
+        };
+        merged.monthlyPlans = buildMonthlyRotation(merged.profile);
+        return merged;
+      } catch (e) {
+        const fresh = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        fresh.monthlyPlans = buildMonthlyRotation(fresh.profile);
+        return fresh;
+      }
+    }
+
+    function persistState() {
+      try {
+        localStorage.setItem('menomix_v5_state', JSON.stringify(state));
+      } catch (e) {
+        console.warn('Almacenamiento lleno');
+      }
+    }
+
+    // ==========================================
+    // 3. ALGORITMO DE ROTACIÓN RIGUROSA
+    // ==========================================
+    function buildMonthlyRotation(profile) {
+      const isVegOnly = profile.diet === 'vegetariana';
+      const isOsteo = profile.focus === 'osteoporosis';
+
+      const sortOsteo = (arr) => {
+        if (!isOsteo) return arr;
+        return [...arr.filter(r => r.osteoporosisRich), ...arr.filter(r => !r.osteoporosisRich)];
+      };
+
+      const bPool = sortOsteo(RECIPES.filter(r => r.category === 'Desayuno' && (!isVegOnly || r.vegetarian)));
+      const sPool = sortOsteo(RECIPES.filter(r => r.category === 'Media Mañana / Merienda'));
+
+      const vegLunches = sortOsteo(RECIPES.filter(r => r.category === 'Comida' && r.vegetarian));
+      const nonVegLunches = sortOsteo(RECIPES.filter(r => r.category === 'Comida' && !r.vegetarian));
+
+      const vegDinners = sortOsteo(RECIPES.filter(r => r.category === 'Cena' && r.vegetarian));
+      const nonVegDinners = sortOsteo(RECIPES.filter(r => r.category === 'Cena' && !r.vegetarian));
+
+      const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+      const plans = {};
+
+      for (let week = 1; week <= 4; week++) {
+        plans[week] = {};
+        const weekIdx = week - 1;
+
+        days.forEach((dayName, dayIdx) => {
+          const absDay = weekIdx * 7 + dayIdx;
+          const b = bPool[absDay % bPool.length];
+          const snack = sPool[absDay % sPool.length];
+
+          let lunch, dinner;
+          if (isVegOnly) {
+            lunch = vegLunches[absDay % vegLunches.length];
+            dinner = vegDinners[absDay % vegDinners.length];
+          } else {
+            const isFishLunchDay = (dayIdx === 1 || dayIdx === 5);
+            if (isFishLunchDay) {
+              lunch = nonVegLunches[(weekIdx * 2 + (dayIdx === 5 ? 1 : 0)) % nonVegLunches.length];
+            } else {
+              const vegDayCount = weekIdx * 5 + [0, 1, 1, 2, 3, 4, 4][dayIdx];
+              lunch = vegLunches[vegDayCount % vegLunches.length];
+            }
+
+            const isFishDinnerDay = (dayIdx === 2 || dayIdx === 6);
+            if (isFishDinnerDay) {
+              dinner = nonVegDinners[(weekIdx * 2 + (dayIdx === 6 ? 1 : 0)) % nonVegDinners.length];
+            } else {
+              const vegDinnerCount = weekIdx * 5 + [0, 1, 2, 2, 3, 4, 4][dayIdx];
+              dinner = vegDinners[vegDinnerCount % vegDinners.length];
+            }
+          }
+
+          plans[week][dayName] = [b.id, snack.id, lunch.id, dinner.id];
+        });
+      }
+      return plans;
+    }
+
+    // ==========================================
+    // 4. CÁLCULOS NUTRICIONALES CLÍNICOS
+    // ==========================================
+    function calculateTargets() {
+      const { age, weight, height, activity, goal, focus } = state.profile;
+      const bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+      let tdee = bmr * activity;
+
+      if (goal === 'lose') tdee *= 0.85;
+      if (goal === 'muscle') tdee *= 1.08;
+
+      const kcal = Math.round(tdee);
+      const protFactor = goal === 'muscle' || goal === 'lose' ? 1.5 : 1.35;
+      const protein = Math.round(weight * protFactor);
+      const calcium = focus === 'osteoporosis' || age >= 50 ? 1200 : 1000;
+      const scaleFactor = Math.max(0.75, Math.min(1.45, kcal / 1620));
+
+      return { bmr: Math.round(bmr), kcal, protein, calcium, scaleFactor };
+    }
+
+    // ==========================================
+    // 5. RENDERIZADO DE UI Y NAVEGACIÓN
+    // ==========================================
+    function switchTab(tabName) {
+      ['recetas', 'plan', 'compra', 'perfil'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== tabName);
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        btn.classList.toggle('text-sage-700', active);
+        btn.classList.toggle('bg-sage-50', active);
+        btn.classList.toggle('opacity-70', !active);
+      });
+      if (tabName === 'plan') renderWeeklyPlan();
+      if (tabName === 'compra') renderShoppingList();
+    }
+
+    function setCookingMode(mode) {
+      state.cookingMode = mode;
+      persistState();
+      updateCookingButtons();
+      renderRecipes();
+    }
+
+    function updateCookingButtons() {
+      const isRobot = state.cookingMode === 'robot';
+      const btnRobot = document.getElementById('btn-mode-robot');
+      const btnTrad = document.getElementById('btn-mode-trad');
+      btnRobot.className = `px-3 py-1.5 rounded-lg text-xs font-bold transition ${isRobot ? 'bg-sage-600 text-white shadow-xs' : 'text-sand-800 hover:bg-white/60'}`;
+      btnTrad.className = `px-3 py-1.5 rounded-lg text-xs font-bold transition ${!isRobot ? 'bg-sage-600 text-white shadow-xs' : 'text-sand-800 hover:bg-white/60'}`;
+    }
+
+    function setFilter(filterVal) {
+      state.filter = filterVal;
+      persistState();
+      document.querySelectorAll('.filter-chip').forEach(chip => {
+        const isActive = chip.dataset.filter === filterVal;
+        chip.className = `filter-chip px-3.5 py-1.5 rounded-full text-xs font-bold shrink-0 transition ${
+          isActive ? 'bg-sage-600 text-white' : 'bg-white border border-sand-200 text-sand-800'
+        }`;
+      });
+      renderRecipes();
+    }
+
+    function renderRecipes() {
+      const grid = document.getElementById('recipes-grid');
+      const targets = calculateTargets();
+      const isOsteoMode = state.profile.focus === 'osteoporosis' || state.filter === 'osteoporosis';
+      document.getElementById('osteo-banner').classList.toggle('hidden', !isOsteoMode);
+
+      let list = [...RECIPES];
+      if (state.profile.diet === 'vegetariana' && state.filter === 'todas') {
+        list = list.filter(r => r.vegetarian);
+      }
+
+      if (state.filter === 'osteoporosis') {
+        list = list.filter(r => r.osteoporosisRich);
+      } else if (state.filter === 'vegetariana') {
+        list = list.filter(r => r.vegetarian);
+      } else if (state.filter !== 'todas') {
+        list = list.filter(r => r.category === state.filter);
+      }
+
+      if (state.profile.focus === 'osteoporosis') {
+        list.sort((a, b) => (b.osteoporosisRich ? 1 : 0) - (a.osteoporosisRich ? 1 : 0));
+      }
+
+      grid.innerHTML = list.map(recipe => {
+        const scaledKcal = Math.round(recipe.baseKcal * targets.scaleFactor);
+        const scaledProt = Math.round(recipe.baseProt * targets.scaleFactor);
+        const scaledCalc = Math.round(recipe.calciumMg * targets.scaleFactor);
+        const userPhoto = state.customPhotos[recipe.id];
+
+        return `
+          <article onclick="openRecipeModal('${recipe.id}')"
+            class="bg-white rounded-2xl border border-sand-200 overflow-hidden shadow-xs hover:border-sage-400 transition cursor-pointer flex flex-col sm:flex-row">
+            <div class="sm:w-36 h-36 sm:h-auto shrink-0 relative flex items-center justify-center overflow-hidden"
+                 style="background-color: ${recipe.color}18">
+              ${userPhoto
+                ? `<img src="${userPhoto}" alt="${recipe.title}" class="w-full h-full object-cover" />`
+                : `<span class="text-5xl">${recipe.emoji}</span>`
+              }
+              <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-white/90 text-[10px] font-bold text-sand-900 shadow-2xs">
+                ${recipe.category === 'Media Mañana / Merienda' ? 'Fruta / Merienda' : recipe.category} · ${recipe.time}
+              </span>
+            </div>
+
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-2.5">
+              <div>
+                <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                  <span class="px-2 py-0.5 rounded-md bg-sage-100 text-sage-800 text-[10px] font-bold">
+                    ${state.cookingMode === 'robot' ? '🤖 Robot' : '🍳 Tradicional'}
+                  </span>
+                  ${recipe.vegetarian
+                    ? `<span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-bold">🌱 Vegetariana</span>`
+                    : ''
+                  }
+                  ${recipe.osteoporosisRich
+                    ? `<span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold">🦴 ${scaledCalc} mg Ca</span>`
+                    : ''
+                  }
+                </div>
+                <h3 class="font-serif font-bold text-base text-sand-900 leading-snug">${recipe.title}</h3>
+                <p class="text-xs text-sand-800/80 mt-1 line-clamp-2">${recipe.benefits}</p>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-sand-100 text-xs">
+                <div class="flex items-center gap-3 font-bold">
+                  <span class="text-sand-900">${scaledKcal} kcal</span>
+                  <span class="text-terracotta-600">${scaledProt}g proteína</span>
+                </div>
+                <span class="text-sage-700 font-bold">Ver pasos →</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // 6. MODAL DE RECETA, FOTO Y COMPARTIR TARJETA
+    // ==========================================
+    let currentModalRecipeId = null;
+
+    function openRecipeModal(id) {
+      currentModalRecipeId = id;
+      const recipe = RECIPES.find(r => r.id === id);
+      if (!recipe) return;
+      const targets = calculateTargets();
+      const scaledKcal = Math.round(recipe.baseKcal * targets.scaleFactor);
+      const scaledProt = Math.round(recipe.baseProt * targets.scaleFactor);
+      const scaledCalc = Math.round(recipe.calciumMg * targets.scaleFactor);
+      const steps = state.cookingMode === 'robot' ? recipe.stepsRobot : recipe.stepsTrad;
+      const userPhoto = state.customPhotos[recipe.id];
+
+      document.getElementById('modal-category').textContent = `${recipe.category} · ${recipe.time} · ${recipe.season}`;
+      document.getElementById('modal-body').innerHTML = `
+        <div class="relative rounded-2xl overflow-hidden border border-sand-200 h-48 flex items-center justify-center"
+             style="background-color: ${recipe.color}20">
+          ${userPhoto
+            ? `<img src="${userPhoto}" alt="${recipe.title}" class="w-full h-full object-cover" />`
+            : `<div class="text-center">
+                 <div class="text-6xl mb-1">${recipe.emoji}</div>
+                 <p class="text-[11px] font-semibold text-sand-800">Puedes añadir tu propia foto del plato</p>
+               </div>`
+          }
+          <label class="absolute bottom-2.5 right-2.5 px-3 py-1.5 rounded-xl bg-white/95 text-sand-900 text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5">
+            📷 ${userPhoto ? 'Cambiar foto' : 'Añadir foto'}
+            <input type="file" accept="image/*" class="hidden" onchange="handleRecipePhotoUpload(event, '${recipe.id}')" />
+          </label>
+        </div>
+
+        <div>
+          <h2 class="font-serif font-bold text-xl text-sage-900">${recipe.title}</h2>
+          <p class="text-xs text-sage-700 font-medium mt-1">${recipe.benefits}</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 bg-white p-3 rounded-2xl border border-sand-200 text-center">
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sand-800">Calorías</div>
+            <div class="text-base font-extrabold text-sand-900">${scaledKcal} kcal</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sand-800">Proteína</div>
+            <div class="text-base font-extrabold text-terracotta-600">${scaledProt} g</div>
+          </div>
+          <div>
+            <div class="text-[10px] font-bold uppercase text-sand-800">Calcio</div>
+            <div class="text-base font-extrabold text-amber-700">${scaledCalc} mg</div>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-sand-200">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-sage-800 mb-2.5">Ingredientes escalados a tu perfil (1 ración)</h4>
+          <ul class="space-y-2 text-sm">
+            ${recipe.ingredients.map(ing => {
+              const qty = Math.round(ing.amount * targets.scaleFactor);
+              return `<li class="flex justify-between border-b border-sand-100 pb-1.5">
+                <span>${ing.name}</span>
+                <span class="font-bold text-sage-800">${qty} ${ing.unit}</span>
+              </li>`;
+            }).join('')}
+          </ul>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-sand-200 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-sage-800">Preparación</h4>
+            <div class="flex bg-sand-100 p-1 rounded-xl text-[11px] font-bold">
+              <button onclick="switchModalMode('robot')" class="px-2.5 py-1 rounded-lg ${state.cookingMode === 'robot' ? 'bg-sage-600 text-white' : 'text-sand-800'}">
+                🤖 Robot
+              </button>
+              <button onclick="switchModalMode('tradicional')" class="px-2.5 py-1 rounded-lg ${state.cookingMode === 'tradicional' ? 'bg-sage-600 text-white' : 'text-sand-800'}">
+                🍳 Tradicional
+              </button>
+            </div>
+          </div>
+
+          <ol class="space-y-2.5 text-sm list-decimal list-inside text-sand-900">
+            ${steps.map(st => `<li class="leading-relaxed">${st}</li>`).join('')}
+          </ol>
+        </div>
+
+        <button onclick="shareRecipeCardWithPhoto('${recipe.id}')"
+          class="w-full py-3.5 px-4 rounded-2xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold text-sm shadow-md flex items-center justify-center gap-2 transition">
+          📸 Compartir tarjeta con foto por WhatsApp
+        </button>
+      `;
+      document.getElementById('recipe-modal').classList.remove('hidden');
+    }
+
+    function switchModalMode(mode) {
+      setCookingMode(mode);
+      if (currentModalRecipeId) openRecipeModal(currentModalRecipeId);
+    }
+
+    function closeRecipeModal() {
+      document.getElementById('recipe-modal').classList.add('hidden');
+    }
+
+    function handleRecipePhotoUpload(event, recipeId) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const maxW = 800;
+          const scale = Math.min(1, maxW / img.width);
+          const c = document.createElement('canvas');
+          c.width = img.width * scale;
+          c.height = img.height * scale;
+          c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+          state.customPhotos[recipeId] = c.toDataURL('image/jpeg', 0.78);
+          persistState();
+          renderRecipes();
+          openRecipeModal(recipeId);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function shareRecipeCardWithPhoto(recipeId) {
+      const recipe = RECIPES.find(r => r.id === recipeId);
+      const targets = calculateTargets();
+      const canvas = document.getElementById('share-canvas');
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = '#FAF8F5';
+      ctx.fillRect(0, 0, 1080, 1350);
+
+      ctx.fillStyle = '#3D6B52';
+      ctx.fillRect(0, 0, 1080, 140);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 42px Georgia, serif';
+      ctx.fillText('MenoMix Mediterránea', 60, 88);
+
+      const userPhoto = state.customPhotos[recipe.id];
+      if (userPhoto) {
+        await new Promise(resolve => {
+          const img = new Image();
+          img.onload = () => {
+            ctx.drawImage(img, 60, 180, 960, 480);
+            resolve();
+          };
+          img.src = userPhoto;
+        });
+      } else {
+        ctx.fillStyle = '#E3ECE7';
+        ctx.fillRect(60, 180, 960, 420);
+        ctx.font = '180px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(recipe.emoji, 540, 440);
+        ctx.textAlign = 'left';
+      }
+
+      const yStart = userPhoto ? 720 : 660;
+      ctx.fillStyle = '#21392D';
+      ctx.font = 'bold 48px Georgia, serif';
+      wrapCanvasText(ctx, recipe.title, 60, yStart, 960, 58);
+
+      const scaledKcal = Math.round(recipe.baseKcal * targets.scaleFactor);
+      const scaledProt = Math.round(recipe.baseProt * targets.scaleFactor);
+      const scaledCalc = Math.round(recipe.calciumMg * targets.scaleFactor);
+
+      ctx.fillStyle = '#C86D4B';
+      ctx.font = 'bold 34px sans-serif';
+      ctx.fillText(`${scaledKcal} kcal  ·  ${scaledProt}g Proteína  ·  ${scaledCalc}mg Calcio`, 60, yStart + 135);
+
+      ctx.fillStyle = '#2E2922';
+      ctx.font = 'bold 32px sans-serif';
+      ctx.fillText('Ingredientes escalados:', 60, yStart + 210);
+
+      ctx.font = '30px sans-serif';
+      recipe.ingredients.slice(0, 5).forEach((ing, idx) => {
+        const qty = Math.round(ing.amount * targets.scaleFactor);
+        ctx.fillText(`• ${ing.name}: ${qty} ${ing.unit}`, 60, yStart + 265 + (idx * 46));
+      });
+
+      ctx.fillStyle = '#518068';
+      ctx.font = 'bold 26px sans-serif';
+      ctx.fillText('Descarga tu plan personalizado en: pereiraevabc-stack.github.io/Menomix-V2/', 60, 1295);
+
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], `MenoMix-${recipe.id}.png`, { type: 'image/png' });
+        const shareText = `Te comparto esta receta de MenoMix Mediterránea: *${recipe.title}* (${scaledKcal} kcal, ${scaledProt}g proteína). Pruébala aquí: https://pereiraevabc-stack.github.io/Menomix-V2/`;
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: recipe.title,
+              text: shareText,
+              files: [file]
+            });
+            return;
+          } catch (err) {}
+        }
+        const link = document.createElement('a');
+        link.download = `MenoMix-${recipe.id}.png`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+      }, 'image/png');
+    }
+
+    function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+      for (let n = 0; n < words.length; n++) {
+        const testLine = line + words[n] + ' ';
+        if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+          ctx.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, x, y);
+    }
+
+    // ==========================================
+    // 7. MENÚ SEMANAL CON DOBLE PATRÓN Y 4 TOMAS DIARIAS
+    // ==========================================
+    function setDietPattern(dietVal) {
+      state.profile.diet = dietVal;
+      state.monthlyPlans = buildMonthlyRotation(state.profile);
+      persistState();
+      syncProfileUI();
+      renderRecipes();
+      renderWeeklyPlan();
+    }
+
+    function selectWeekNumber(weekNum) {
+      state.selectedWeek = weekNum;
+      persistState();
+      document.querySelectorAll('.week-tab-btn').forEach(btn => {
+        const active = Number(btn.dataset.week) === weekNum;
+        btn.className = `week-tab-btn py-1.5 rounded-lg text-xs font-bold transition ${
+          active ? 'bg-white text-sage-800 shadow-2xs' : 'text-sand-800'
+        }`;
+      });
+      renderWeeklyPlan();
+    }
+
+    function rotateNextWeek() {
+      const next = state.selectedWeek >= 4 ? 1 : state.selectedWeek + 1;
+      selectWeekNumber(next);
+    }
+
+    function renderWeeklyPlan() {
+      const container = document.getElementById('weekly-plan-container');
+      const targets = calculateTargets();
+      const isVeg = state.profile.diet === 'vegetariana';
+
+      const btnMed = document.getElementById('btn-diet-med');
+      const btnVeg = document.getElementById('btn-diet-veg');
+      btnMed.className = `py-2 px-2.5 rounded-lg text-xs font-bold transition ${!isVeg ? 'bg-sage-600 text-white shadow-2xs' : 'text-sage-900 hover:bg-white/70'}`;
+      btnVeg.className = `py-2 px-2.5 rounded-lg text-xs font-bold transition ${isVeg ? 'bg-sage-600 text-white shadow-2xs' : 'text-sage-900 hover:bg-white/70'}`;
+
+      document.getElementById('diet-rigor-badge').innerHTML = isVeg
+        ? '🌱 <strong>Rigor Vegetariano (Lucía Martínez / Becoming Vegan):</strong> 100% platos ovolactovegetarianos y vegetales con combinación diaria de legumbres, tofu/tempeh, frutos secos, calcio biodisponible y <strong>fruta entera en media mañana/merienda</strong>.'
+        : '🫒 <strong>Rigor Mediterráneo (PREDIMED / AEEM / Harvard Plate):</strong> Prevalencia de <strong>legumbres y verduras en 10 de las 14 tomas principales</strong> (5 comidas y 5 cenas vegetales/legumbre), 4 tomas de pescado azul/blanco o marisco y <strong>fruta entera diaria en media mañana/merienda</strong>.';
+
+      const currentWeekPlan = state.monthlyPlans[state.selectedWeek] || state.monthlyPlans[1];
+      const days = Object.keys(currentWeekPlan);
+
+      container.innerHTML = days.map(day => {
+        const mealIds = currentWeekPlan[day];
+        const meals = mealIds.map(id => RECIPES.find(r => r.id === id)).filter(Boolean);
+        const dayKcal = meals.reduce((sum, r) => sum + Math.round(r.baseKcal * targets.scaleFactor), 0);
+        const dayProt = meals.reduce((sum, r) => sum + Math.round(r.baseProt * targets.scaleFactor), 0);
+        const dayCalc = meals.reduce((sum, r) => sum + Math.round(r.calciumMg * targets.scaleFactor), 0);
+
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-sand-200 shadow-xs space-y-2.5">
+            <div class="flex items-center justify-between border-b border-sand-100 pb-2">
+              <h3 class="font-serif font-bold text-base text-sage-900">${day} · Sem. ${state.selectedWeek}</h3>
+              <span class="text-xs font-bold text-sage-700">${dayKcal} kcal · ${dayProt}g P · ${dayCalc}mg Ca</span>
+            </div>
+            <div class="space-y-2">
+              ${meals.map(m => `
+                <div onclick="openRecipeModal('${m.id}')" class="flex items-center justify-between p-2 rounded-xl bg-sand-50 hover:bg-sage-50 cursor-pointer">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-xl">${m.emoji}</span>
+                    <div>
+                      <div class="text-[10px] font-bold uppercase text-sage-600">
+                        ${m.category === 'Media Mañana / Merienda' ? '🍎 Media Mañana / Merienda' : m.category} ${m.vegetarian ? '· 🌱' : ''}
+                      </div>
+                      <div class="text-xs font-bold text-sand-900">${m.title}</div>
+                    </div>
+                  </div>
+                  <span class="text-xs font-bold text-sage-700 shrink-0 ml-2">Ver</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderShoppingList() {
+      const container = document.getElementById('shopping-list-container');
+      const targets = calculateTargets();
+      const currentWeekPlan = state.monthlyPlans[state.selectedWeek] || state.monthlyPlans[1];
+      const dietName = state.profile.diet === 'vegetariana' ? 'Menú Vegetariano' : 'Menú Mediterráneo';
+      document.getElementById('shopping-subtitle').textContent = `${dietName} · Semana ${state.selectedWeek} (incluye fruta y gramos exactos).`;
+      const totals = {};
+
+      Object.values(currentWeekPlan).flat().forEach(id => {
+        const recipe = RECIPES.find(r => r.id === id);
+        if (!recipe) return;
+        recipe.ingredients.forEach(ing => {
+          const key = `${ing.name}|${ing.unit}`;
+          totals[key] = (totals[key] || 0) + Math.round(ing.amount * targets.scaleFactor);
+        });
+      });
+
+      const entries = Object.entries(totals);
+      container.innerHTML = entries.map(([key, total]) => {
+        const [name, unit] = key.split('|');
+        const checked = !!state.checkedItems[key];
+        return `
+          <label class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-sand-50">
+            <div class="flex items-center gap-3">
+              <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleShopItem('${key}')"
+                class="w-4 h-4 accent-sage-600 rounded" />
+              <span class="text-sm ${checked ? 'line-through opacity-50' : 'font-medium text-sand-900'}">${name}</span>
+            </div>
+            <span class="text-xs font-bold text-sage-800 bg-sage-50 px-2.5 py-1 rounded-lg">${total} ${unit}</span>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function toggleShopItem(key) {
+      state.checkedItems[key] = !state.checkedItems[key];
+      persistState();
+      renderShoppingList();
+    }
+
+    function clearCheckedShopping() {
+      state.checkedItems = {};
+      persistState();
+      renderShoppingList();
+    }
+
+    function shareShoppingListWhatsApp() {
+      const targets = calculateTargets();
+      const currentWeekPlan = state.monthlyPlans[state.selectedWeek] || state.monthlyPlans[1];
+      const totals = {};
+      Object.values(currentWeekPlan).flat().forEach(id => {
+        const recipe = RECIPES.find(r => r.id === id);
+        if (!recipe) return;
+        recipe.ingredients.forEach(ing => {
+          const key = `${ing.name} (${ing.unit})`;
+          totals[key] = (totals[key] || 0) + Math.round(ing.amount * targets.scaleFactor);
+        });
+      });
+      const lines = Object.entries(totals).map(([k, v]) => `- ${k}: ${v}`);
+      const msg = `*Lista de la Compra MenoMix (Semana ${state.selectedWeek}):*\n\n${lines.join('\n')}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ==========================================
+    // 8. PERFIL Y FICHA TÉCNICA PARA NUTRICIONISTA
+    // ==========================================
+    function syncProfileUI() {
+      const p = state.profile;
+      document.getElementById('prof-name').value = p.name || '';
+      document.getElementById('prof-age').value = p.age;
+      document.getElementById('prof-weight').value = p.weight;
+      document.getElementById('prof-height').value = p.height;
+      document.getElementById('prof-activity').value = String(p.activity);
+      document.getElementById('prof-focus').value = p.focus || 'general';
+      document.getElementById('prof-diet').value = p.diet || 'mediterranea';
+
+      document.querySelectorAll('.goal-btn').forEach(btn => {
+        const active = btn.dataset.goal === p.goal;
+        btn.className = `goal-btn py-2 px-2 rounded-xl border text-xs font-bold transition ${
+          active ? 'bg-sage-600 text-white border-sage-600' : 'bg-sand-50 text-sand-800 border-sand-200'
+        }`;
+      });
+
+      const t = calculateTargets();
+      document.getElementById('header-kcal').textContent = `${t.kcal} kcal`;
+      document.getElementById('header-prot').textContent = `${t.protein}g P`;
+      document.getElementById('res-kcal').textContent = `${t.kcal} kcal`;
+      document.getElementById('res-prot').textContent = `${t.protein} g`;
+      document.getElementById('res-calc').textContent = `${t.calcium} mg`;
+
+      const calcBadge = document.getElementById('header-calc-badge');
+      calcBadge.textContent = `${t.calcium}mg Ca`;
+      calcBadge.classList.toggle('hidden', p.focus !== 'osteoporosis');
+    }
+
+    function setGoal(goalVal) {
+      state.profile.goal = goalVal;
+      state.monthlyPlans = buildMonthlyRotation(state.profile);
+      persistState();
+      syncProfileUI();
+      renderRecipes();
+    }
+
+    function saveProfile() {
+      state.profile.name = document.getElementById('prof-name').value.trim();
+      state.profile.age = Number(document.getElementById('prof-age').value) || 52;
+      state.profile.weight = Number(document.getElementById('prof-weight').value) || 65;
+      state.profile.height = Number(document.getElementById('prof-height').value) || 163;
+      state.profile.activity = Number(document.getElementById('prof-activity').value) || 1.375;
+      state.profile.focus = document.getElementById('prof-focus').value;
+      state.profile.diet = document.getElementById('prof-diet').value;
+
+      state.monthlyPlans = buildMonthlyRotation(state.profile);
+      persistState();
+      syncProfileUI();
+      renderRecipes();
+    }
+
+    function openNutritionistModal() {
+      const p = state.profile;
+      const t = calculateTargets();
+      const focusLabels = {
+        general: 'Equilibrio Menopausia General',
+        osteoporosis: 'Prevención / Apoyo Osteoporosis (Calcio >= 1200 mg/día + Vitamina D)',
+        glucemia: 'Control Glucémico y Sensibilidad a la Insulina'
+      };
+
+      document.getElementById('nutritionist-body').innerHTML = `
+        <div class="bg-sage-50 border border-sage-200 rounded-2xl p-3.5 space-y-1">
+          <div class="font-bold text-sage-900">1. Datos Antropométricos y Objetivo</div>
+          <p>Usuaria: <strong>${p.name || 'No especificado'}</strong> · Edad: <strong>${p.age} años</strong> · Peso: <strong>${p.weight} kg</strong> · Altura: <strong>${p.height} cm</strong></p>
+          <p>Factor actividad: <strong>${p.activity}</strong> · Enfoque clínico: <strong>${focusLabels[p.focus]}</strong></p>
+          <p>Menú activo: <strong>${p.diet === 'vegetariana' ? 'Menú Vegetariano (Ovolactovegetariano)' : 'Menú Mediterráneo con Prevalencia de Legumbres y Verduras'}</strong></p>
+        </div>
+
+        <div class="bg-sand-50 border border-sand-200 rounded-2xl p-3.5 space-y-1.5">
+          <div class="font-bold text-sand-900">2. Rigor Nutricional y Estructura de 4 Tomas</div>
+          <p>• <strong>Tasa Metabólica Basal (Mifflin-St Jeor mujer):</strong> ${t.bmr} kcal/día · <strong>Objetivo:</strong> ${t.kcal} kcal/día (${t.scaleFactor.toFixed(2)}x).</p>
+          <p>• <strong>Proteína diaria:</strong> ${t.protein} g/día (${(t.protein / p.weight).toFixed(2)} g/kg peso corporal para prevención de sarcopenia).</p>
+          <p>• <strong>Calcio elemental:</strong> ${t.calcium} mg/día (fuentes biodisponibles: sardina con espina, crucíferas, col kale, sésamo/tahini, lácteos fermentados, tofu cálcico).</p>
+          <p>• <strong>Distribución diaria:</strong> Desayuno + Media Mañana/Merienda con fruta entera y frutos secos/semillas + Comida y Cena con predominio de legumbres y hortalizas.</p>
+        </div>
+
+        <div class="bg-white border border-sand-200 rounded-2xl p-3.5 space-y-1.5">
+          <div class="font-bold text-sand-900">3. Respaldo Bibliográfico (50 Recetas)</div>
+          <p>• <strong>Dieta Mediterránea y Menopausia:</strong> Consensos de la Asociación Española para el Estudio de la Menopausia (AEEM), Fundación Dieta Mediterránea y estudio PREDIMED.</p>
+          <p>• <strong>Nutrición Vegetariana:</strong> Criterios de Lucía Martínez (<em>Vegetarianos con ciencia</em>) y manual <em>Becoming Vegan</em> (Davis & Melina) para combinación proteica y calcio vegetal.</p>
+          <p>• <strong>Estructura de Plato:</strong> Proporciones del <em>Plato para Comer Saludable</em> de Harvard T.H. Chan School of Public Health y estacionalidad MAPA/FEN.</p>
+        </div>
+      `;
+      document.getElementById('nutritionist-modal').classList.remove('hidden');
+    }
+
+    function closeNutritionistModal() {
+      document.getElementById('nutritionist-modal').classList.add('hidden');
+    }
+
+    function buildNutritionistText() {
+      const p = state.profile;
+      const t = calculateTargets();
+      return `FICHA TÉCNICA NUTRICIONAL - MENOMIX MEDITERRÁNEA\n` +
+        `Usuaria: ${p.name || 'Perfil local'} | ${p.age} años | ${p.weight} kg | ${p.height} cm\n` +
+        `Menú: ${p.diet} (prevalencia legumbres/verduras + fruta diaria) | Enfoque: ${p.focus}\n` +
+        `TMB (Mifflin-St Jeor): ${t.bmr} kcal | Objetivo diario: ${t.kcal} kcal\n` +
+        `Proteína objetivo: ${t.protein} g/día (${(t.protein / p.weight).toFixed(2)} g/kg)\n` +
+        `Calcio objetivo: ${t.calcium} mg/día | Coeficiente escalado: ${t.scaleFactor.toFixed(2)}x\n` +
+        `Catálogo: 50 recetas (10 desayunos, 8 frutas/meriendas, 16 comidas, 16 cenas)\n` +
+        `Enlace app: https://pereiraevabc-stack.github.io/Menomix-V2/`;
+    }
+
+    function copyNutritionistReport() {
+      navigator.clipboard.writeText(buildNutritionistText());
+      alert('Ficha técnica copiada al portapapeles.');
+    }
+
+    function shareNutritionistWhatsApp() {
+      window.open(`https://wa.me/?text=${encodeURIComponent(buildNutritionistText())}`, '_blank');
+    }
+
+    function resetAllData() {
+      if (!confirm('¿Seguro que quieres borrar tus datos guardados y volver a los valores iniciales?')) return;
+      localStorage.removeItem('menomix_v5_state');
+      localStorage.removeItem('menomix_v4_state');
+      localStorage.removeItem('menomix_v3_state');
+      localStorage.removeItem('menomix_v2_state');
+      state = loadState();
+      syncProfileUI();
+      updateCookingButtons();
+      renderRecipes();
+    }
+
+    // ==========================================
+    // 9. INICIALIZACIÓN PWA MANIFEST E ICONO
+    // ==========================================
+    function initPWA() {
+      const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#3D6B52"/><path d="M240 390c-75 0-135-60-135-135 0-95 110-145 270-165-15 140-50 300-135 300z" fill="#FAF8F5"/><path d="M135 405c25-55 75-95 155-120" stroke="#C86D4B" stroke-width="26" stroke-linecap="round" fill="none"/></svg>`;
+      const iconUrl = 'data:image/svg+xml;base64,' + btoa(svgIcon);
+      document.getElementById('apple-touch-icon').href = iconUrl;
+
+      const manifest = {
+        name: 'MenoMix Mediterránea',
+        short_name: 'MenoMix',
+        start_url: './',
+        display: 'standalone',
+        background_color: '#FAF8F5',
+        theme_color: '#3D6B52',
+        icons: [{ src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      document.getElementById('pwa-manifest').href = URL.createObjectURL(manifestBlob);
+    }
+
+    initPWA();
+    syncProfileUI();
+    updateCookingButtons();
+    renderRecipes();
+  </script>
+</body>
+</html>
